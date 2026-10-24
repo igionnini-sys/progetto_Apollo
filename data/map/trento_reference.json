@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "source": "Schermate Street View fornite dall'utente il 24 ottobre 2026",
+    "image_dates": ["luglio 2025", "novembre 2020"],
+    "geometry": "Impronte e ponticello OSM; altezze, colori e dettagli stimati dalle viste esterne",
+    "building_matches_verified": false,
+    "note": "Associazioni degli edifici alle foto provvisorie; nessuna immagine Google distribuita come texture"
+  },
+  "road_width_estimate": 6.6,
+  "sidewalk_width_estimate": 1.15,
+  "profiles": {
+    "901221176": {"style": "apartment", "height": 10.8, "color": "eee4d2", "accent": "b67965", "window": "roller", "balcony": "continuous", "base_height": 2.8},
+    "901221175": {"style": "house", "height": 6.3, "color": "ece7da", "accent": "ad7661", "window": "roller", "balcony": "continuous", "base_height": 0.8},
+    "904091086": {"style": "apartment", "height": 14.4, "color": "e0d0a1", "accent": "aa625a", "window": "roller", "balcony": "continuous", "base_height": 2.9},
+    "904091089": {"style": "house", "height": 7.0, "color": "d89e83", "accent": "dcd2bd", "window": "shutter", "balcony": "none", "base_height": 0.8},
+    "904091091": {"style": "house", "height": 6.5, "color": "ede7d6", "accent": "d0c5af", "window": "shutter", "balcony": "individual", "base_height": 1.4},
+    "904461102": {"style": "barn", "height": 4.5, "color": "a3957f", "accent": "8b6951", "window": "barn", "balcony": "none", "base_height": 0.6},
+    "907689231": {"style": "house", "height": 6.4, "color": "d4b69b", "accent": "a9a697", "window": "shutter", "balcony": "individual", "base_height": 1.8},
+    "907689228": {"style": "house", "height": 4.5, "color": "ad5d55", "accent": "bbb5a6", "window": "roller", "balcony": "none", "base_height": 0.6}
+  }
+}

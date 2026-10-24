@@ -1,0 +1,44 @@
+{
+  "route": [
+    "3088506703",
+    "843232222",
+    "3088506700",
+    "3088506701",
+    "3088506705",
+    "2249157561",
+    "596808489",
+    "2249157565",
+    "596808487",
+    "2249157055",
+    "2249157057",
+    "5640681125",
+    "596808485",
+    "2249157560",
+    "5178754567",
+    "6205459152",
+    "286093393",
+    "1120192690",
+    "10969762073",
+    "10793127973",
+    "9628942610",
+    "9628942609",
+    "286093392",
+    "9628942612",
+    "921141622",
+    "9628942611",
+    "3785931230"
+  ],
+  "traffic_node": "286093393",
+  "school_lat_lon": [
+    45.1993144,
+    7.781281
+  ],
+  "metadata": {
+    "preview": true,
+    "school_vehicle_access_verified": false,
+    "length_m": 669,
+    "description": "Partenza pubblica su Via Trento; sosta narrativa su Via Brandizzo; ultimo tratto a piedi raccontato, non simulato.",
+    "attribution": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0"
+  }
+}

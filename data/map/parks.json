@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "verified_on": "2026-10-17",
+    "source_timestamp": "2026-10-17T05:47:51Z",
+    "attribution": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0",
+    "visit_mode": "Selezione dal menu; breve avvicinamento locale, non itinerario dal centro città"
+  },
+  "parks": [
+    {
+      "id": "madonna",
+      "name": "Madonna delle Grazie",
+      "lat": 45.20038719645936,
+      "lon": 7.781930138694774,
+      "osm_way": 375496621,
+      "size": [
+        8,
+        13
+      ],
+      "yaw": 0.5235987755982988,
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-piazza-madonna-delle-grazie-23802-1-6c13d3e1a5604c456988a0fedf287c3b",
+      "precision": "Area giochi OSM, associata alla scheda comunale della piazza; allestimento illustrativo.",
+      "outline_lat_lon": [
+        [
+          45.2005245,
+          7.7819311
+        ],
+        [
+          45.2002728,
+          7.782067
+        ],
+        [
+          45.2002614,
+          7.7820493
+        ],
+        [
+          45.2002602,
+          7.7820244
+        ],
+        [
+          45.2004037,
+          7.7817775
+        ]
+      ],
+      "route": [
+        "3785931230",
+        "9628942611"
+      ]
+    },
+    {
+      "id": "san_grato",
+      "name": "San Grato",
+      "lat": 45.1918597,
+      "lon": 7.7734769,
+      "size": [
+        5.5,
+        16
+      ],
+      "yaw": -1.3655511920287173,
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-san-grato-23803-1-591faac194ac2357330ae2c7618db30b",
+      "precision": "Pin comunale; confini e disposizione dei giochi approssimati. Ingombro illustrativo adattato allo spazio libero rispetto alle strade OSM.",
+      "route": [
+        "11691971238",
+        "837373664"
+      ]
+    }
+  ],
+  "pending": [
+    {
+      "id": "de_gasperi",
+      "name": "Alcide De Gasperi",
+      "lat": 45.2049154,
+      "lon": 7.7756619,
+      "reason": "Il pin comunale ricade nell'impronta OSM della scuola Ghirotti; occorre localizzare l'area di fronte alla scuola.",
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-alcide-de-gasperi-23805-1-5c796ff1a899ae935e623c1076e6db56"
+    },
+    {
+      "id": "pertini",
+      "name": "Sandro Pertini",
+      "lat": 45.1944329,
+      "lon": 7.7706178,
+      "reason": "Il pin comunale è presso l'incrocio Via Padova/Via Canova; perimetro del parco non ancora associato con certezza.",
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-sandro-pertini-23804-1-8c6bbad94cd5e527206b7e42c4f83ec8"
+    },
+    {
+      "id": "riviera",
+      "name": "Riviera",
+      "lat": 45.2051456,
+      "lon": 7.7850319,
+      "size": [
+        14,
+        18
+      ],
+      "yaw": 0.0,
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-riviera-27418-1-9fe8f60a0a35d99b1a3da5ca7194714c",
+      "precision": "Pin comunale; confini e disposizione dei giochi approssimati. La scheda descrive una recinzione chiusa: visita virtuale senza accesso del furgone.",
+      "reason": "Il pin comunale ? vicino a impronte residenziali OSM: un allestimento attorno al punto si sovrappone alle case. Perimetro da verificare; nessuna area giochi spostata arbitrariamente."
+    }
+  ]
+}

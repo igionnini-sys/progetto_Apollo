@@ -1,0 +1,908 @@
+# PROJECT APOLLO – MISSIONE SCUOLA
+## Complete AI Game Development Master Prompt
+
+### YOUR ROLE
+
+You are an expert game development team consisting of:
+
+- Senior Godot 4 Developer
+- GDScript Programmer
+- 3D Environment Artist
+- Vehicle Physics Programmer
+- Game Designer
+- UI/UX Designer
+- Technical Project Manager
+- Level Designer
+- Game Testing Engineer
+
+Your mission is to develop a complete, polished, playable 3D video game titled:
+
+**APOLLO – Missione Scuola**
+
+This is a personal gift for a young girl who travels to school every morning with her grandfather in a white 2010 Fiat Ducato van affectionately named "Apollo".
+
+The game must recreate this experience as a colorful, charming, humorous adventure.
+
+The final game must feel like a real small independent video game, not just a technical demonstration.
+
+All game dialogue, menus, user interface elements, and explanations provided to the developer must be in Italian.
+
+---
+
+# 1. TECHNICAL SPECIFICATIONS
+
+## Game engine
+- Godot 4.x, using a specific stable version selected at project initialization
+- Language: GDScript
+- Renderer: Compatibility or Mobile, depending on testing requirements
+- Platform: Windows 10/11
+- Resolution: 1920×1080, scalable
+- Target: 60 FPS
+- Offline single-player
+- Controller and keyboard support
+- No paid third-party dependencies
+
+## Development requirements
+
+Use a modular project architecture.
+
+Separate vehicle handling, camera logic, environment generation, NPC behavior, missions, UI, audio, and save data into independent systems.
+
+Prefer built-in Godot functionality.
+
+Use original procedural geometry or appropriately licensed assets.
+
+Never invent engine methods or undocumented API features.
+
+All code must be compatible with the chosen stable Godot version.
+
+## Recommended structure
+
+res://
+- scenes/
+  - main/
+  - vehicles/
+  - environments/
+  - characters/
+  - missions/
+  - ui/
+  - playgrounds/
+- scripts/
+  - vehicles/
+  - environment/
+  - characters/
+  - gameplay/
+  - ui/
+  - utilities/
+- assets/
+  - models/
+  - materials/
+  - textures/
+  - audio/
+  - fonts/
+- data/
+  - map/
+  - missions/
+  - dialogue/
+- tests/
+
+Create the directories as required.
+
+---
+
+# 2. ART DIRECTION
+
+## General visual style
+
+The entire game must use a polished, cheerful, stylized 3D cartoon art style.
+
+Visual references:
+- Low-poly diorama environments
+- Friendly animated-movie aesthetic
+- Soft morning sunlight
+- Rounded geometry
+- Colorful but harmonious materials
+- Simplified architecture
+- Warm atmosphere
+- Expressive characters
+
+Do not pursue photorealism.
+
+The environment must be recognizable, charming, and efficient to render.
+
+Use appealing lighting, shadows, atmospheric effects, and ambient decoration without sacrificing performance.
+
+---
+
+# 3. MAIN VEHICLE: APOLLO
+
+Apollo is a white Fiat Ducato van, approximately model year 2010.
+
+The van is the central visual identity of the game.
+
+## Vehicle appearance
+
+Create a recognizable cartoon interpretation of the original vehicle.
+
+Features:
+- White body
+- Boxy cargo-van silhouette
+- Tall roof
+- Large front windshield
+- Dark front and rear bumpers
+- Black side mirrors
+- Sliding side door
+- Headlights and taillights
+- Four properly positioned wheels
+- Recognizable front grille
+- Simple interior
+- Steering wheel and seats
+
+For initial development, construct Apollo using procedural meshes, primitive geometry, and basic materials.
+
+The 3D model must later be replaceable with a more detailed GLB/glTF model without rewriting driving logic.
+
+Support reference photographs of the real vehicle for future appearance customization.
+
+## Driving mechanics
+
+Implement:
+- Smooth acceleration
+- Braking
+- Reverse
+- Steering
+- Speed limitation
+- Steering sensitivity relative to speed
+- Simple arcade-style handling
+- Wheel rotation animations
+- Steering wheel visual movement
+- Headlights
+- Brake lights
+- Optional horn
+- Collision detection
+- Safe vehicle reset
+
+The vehicle should feel like a friendly cartoon van.
+
+Driving must be accessible to children.
+
+Avoid realistic damage, violent crashes, complex gear shifting, or punishing mechanics.
+
+For the first prototype, evaluate a custom arcade controller using CharacterBody3D or an appropriate physics body.
+
+Do not assume VehicleBody3D is automatically the best option. Select the implementation that gives the most reliable and predictable arcade behavior, and explain the choice.
+
+## Camera
+
+Implement:
+- Third-person follow camera
+- Smooth movement
+- Adjustable follow distance
+- Smooth cornering
+- Camera collision prevention
+- Optional alternative camera viewpoint
+- Configurable sensitivity
+
+The initial gameplay camera must show Apollo clearly from behind and slightly above.
+
+---
+
+# 4. CHARACTERS
+
+## Grandfather
+
+A friendly, cheerful cartoon grandfather.
+
+He is the central companion during the school journey.
+
+Characteristics:
+- Warm personality
+- Humorous dialogue
+- Helpful encouragement
+- Affectionate relationship with granddaughter
+
+He is represented as the vehicle's driver in the story.
+
+The player controls Apollo through the gameplay system.
+
+## Granddaughter
+
+A cheerful young girl.
+
+She is the emotional center of the game.
+
+Characteristics:
+- Curious
+- Enthusiastic
+- Playful
+- Excited about her daily trip with grandfather
+
+Create configurable character models.
+
+Initially use simple placeholder cartoon characters.
+
+Their appearance can later be adapted using reference material supplied by the developer.
+
+## Dialogue examples
+
+Grandfather:
+"Pronta per una nuova avventura?"
+
+Granddaughter:
+"Si parte con Apollo!"
+
+Grandfather:
+"Allacciamo le cinture e via!"
+
+Granddaughter:
+"Nonno, guarda! C'è il parco giochi!"
+
+Grandfather:
+"Attenzione, comandante! La scuola ci aspetta!"
+
+Use brief, humorous, warm dialogue appropriate for a child.
+
+All passengers must be depicted safely seated and wearing seat belts while the van moves.
+
+---
+
+# 5. WORLD DESIGN – VOLPIANO, ITALY
+
+## Core requirement
+
+The game must take place in a stylized, cartoon recreation of the real town of Volpiano, in the Metropolitan City of Turin, Piedmont, Italy.
+
+This is a critical project requirement.
+
+DO NOT generate a generic fictional Italian town as the final game environment.
+
+The goal is to create a miniature cartoon interpretation of the real Volpiano, recognizable to someone who lives there.
+
+## Main journey
+
+Departure:
+**Via Trento, Volpiano, Italy — exact departure configured locally.**
+
+Destination:
+**School area on Via Trieste, Volpiano, Italy**
+
+The exact school entrance and legal road access must be verified before final route generation.
+
+The main route must be based on the real geographic road network between these locations.
+
+The starting property should use a simplified, generic cartoon house initially, not an automatically inferred reconstruction of the private building.
+
+Keep private addresses in local development configuration, rather than public repositories or distributed source data.
+
+## Geographic data
+
+Use OpenStreetMap as the primary geographic reference.
+
+Investigate the available OSM data for:
+- Streets
+- Intersections
+- Road directionality
+- Roundabouts
+- Pedestrian crossings
+- Building footprints
+- Parks
+- Playgrounds
+- Public squares
+- Schools
+- Important landmarks
+
+Build an appropriate OSM import or conversion pipeline.
+
+Document licensing and attribution requirements for OSM and any third-party assets.
+
+Maintain actual road topology whenever practical.
+
+Simplify geometry while keeping intersections and spatial relationships recognizable.
+
+Do not invent street geometry when reliable data is available.
+
+If accurate source data is unavailable, use clearly documented temporary placeholders.
+
+## Geographic coordinate conversion
+
+Implement a suitable conversion from latitude/longitude to local Godot coordinates.
+
+Use a local origin near the playable area to avoid unnecessary floating-point precision problems.
+
+Keep the following configurable:
+- Geographic origin
+- Map scale
+- Road width
+- Building height approximation
+- Terrain elevation
+- Spawn locations
+- School arrival zone
+
+The environment must support future map expansion.
+
+## Recognizable town elements
+
+Investigate and recreate important Volpiano landmarks where relevant to the selected playable area.
+
+Candidates include:
+- Piazza Vittorio Emanuele II
+- Palazzo Comunale
+- Chiesa dei Santi Pietro e Paolo
+- Via Umberto I
+- Piazza XXV Aprile
+- Historic town center
+
+Verify positions and appearance using reliable references before modeling.
+
+Do not force landmarks into incorrect geographic positions just to include them.
+
+## Street appearance
+
+Create:
+- Asphalt roads
+- Sidewalks
+- Crosswalks
+- Traffic lights
+- Road signs
+- Street name signs
+- Parked cars
+- Streetlights
+- Trees
+- Flowerbeds
+- Trash bins
+- Benches
+- Shopfronts
+- Residential buildings
+
+Architecture should be inspired by real Piedmontese towns:
+- Warm-colored building façades
+- Terracotta roofs
+- Balconies
+- Window shutters
+- Small shops
+- Traditional houses
+- Public squares
+
+---
+
+# 6. PLAYGROUNDS AND PARKS
+
+Playgrounds are an important gameplay feature.
+
+They must not be merely decorative.
+
+Research the actual public playgrounds in Volpiano and reproduce their approximate real-world locations.
+
+Candidate locations to verify include:
+- Area Giochi Alcide De Gasperi
+- Area Giochi Piazza Madonna delle Grazie
+- Area Giochi Riviera
+- Area Giochi Sandro Pertini
+- Area Giochi San Grato
+
+Include additional public playgrounds if verified geographic information is available.
+
+Each playground should contain:
+- Swings
+- Slides
+- Seesaws
+- Climbing structures
+- Benches
+- Trees
+- Colorful safety flooring
+- Decorations
+- Fences where appropriate
+
+## Playground gameplay
+
+The player may unlock optional playground missions.
+
+Examples:
+
+### Playground Mission 1 – La Stella Perduta
+Find a golden star hidden near the playground.
+
+### Playground Mission 2 – Il Tesoro di Apollo
+Locate a small treasure box containing a collectible Apollo sticker.
+
+### Playground Mission 3 – Il Parco delle Sorprese
+Complete a simple child-friendly minigame.
+
+### Playground Mission 4 – Il Giro Speciale
+Discover an optional scenic route through Volpiano.
+
+Playgrounds should appear in the town based on their actual locations.
+
+They must not be artificially relocated to the main school route.
+
+If a playground is far from the main route, make it accessible as an optional exploration destination.
+
+---
+
+# 7. MAIN GAMEPLAY
+
+## Primary mission: Missione Scuola
+
+The player must drive Apollo from home to school.
+
+The initial mission sequence:
+
+1. Start at the home location.
+2. Show Apollo parked outside.
+3. Play a short introduction with grandfather and granddaughter.
+4. Enter the driving phase.
+5. Display the current destination.
+6. Follow a navigation indicator.
+7. Collect optional stars.
+8. Drive through the town.
+9. Encounter a simple traffic-light challenge.
+10. Reach the school area.
+11. Park Apollo in the highlighted destination.
+12. Play an ending animation.
+13. Display a congratulatory message.
+
+Final message:
+
+"MISSIONE COMPIUTA!"
+
+"Grazie Apollo! Anche oggi siamo arrivati a scuola!"
+
+## Difficulty
+
+The initial game must be easy.
+
+No strict time limit.
+
+No permanent failure.
+
+Allow unlimited retries.
+
+Implement optional driving assistance.
+
+Obstacles must be playful rather than frustrating.
+
+---
+
+# 8. ADDITIONAL MISSIONS
+
+After completing the initial school mission, additional activities can be unlocked.
+
+## Mission: Apollo Esploratore
+
+Explore the town and find hidden locations.
+
+## Mission: Caccia alle Stelle
+
+Collect stars scattered throughout the accessible town.
+
+## Mission: Il Giro dei Parchi
+
+Visit several real playgrounds in Volpiano.
+
+## Mission: Il Parcheggio Perfetto
+
+Park Apollo in a highlighted area.
+
+## Mission: Il Nonno ha Dimenticato Qualcosa!
+
+Return to the home area to collect a forgotten school item.
+
+## Mission: La Strada Panoramica
+
+Take an optional scenic route and discover points of interest.
+
+## Mission: Super Apollo
+
+A playful bonus challenge featuring temporary visual effects, special sounds, and exaggerated cartoon animations.
+
+Maintain safe, child-friendly driving mechanics.
+
+---
+
+# 9. NAVIGATION SYSTEM
+
+Implement:
+- Directional arrows
+- Destination markers
+- Checkpoints
+- Simple route guidance
+- Mission progression
+- Optional minimap
+
+When the real road network is available, represent the drivable route as a graph.
+
+Use a suitable pathfinding solution such as AStar3D or AStar2D, depending on map representation.
+
+Ensure the navigation system follows roads rather than drawing direct straight-line paths through buildings.
+
+Respect road directionality where the source map provides it.
+
+Do not implement complicated GPS navigation for the initial prototype.
+
+---
+
+# 10. COLLECTIBLES AND REWARDS
+
+Implement a simple collectible system.
+
+Initial collectible types:
+- Golden stars
+- Apollo stickers
+- Special badges
+- Hidden souvenirs
+
+The player should receive positive feedback.
+
+Examples:
+"Fantastico!"
+"Bravo pilota!"
+"Una stella per Apollo!"
+"Che bella scoperta!"
+
+Collectibles may unlock:
+- Special horn sounds
+- Cosmetic decorations
+- Vehicle stickers
+- Additional missions
+- Secret dialogue
+- New exploration areas
+
+Avoid purchases, advertisements, monetization, or online accounts.
+
+---
+
+# 11. USER INTERFACE
+
+All interface elements must be in Italian.
+
+## Main menu
+
+Title:
+APOLLO – Missione Scuola
+
+Buttons:
+- Gioca
+- Esplora Volpiano
+- Collezione
+- Impostazioni
+- Esci
+
+## In-game interface
+
+Display:
+- Current mission
+- Stars collected
+- Destination direction
+- Optional speed indicator
+- Pause button
+- Assistance prompts
+
+The interface must have:
+- Large readable text
+- Simple icons
+- Friendly colors
+- Accessible controls
+- Limited screen clutter
+
+## Pause menu
+
+- Continua
+- Ricomincia
+- Impostazioni
+- Menu principale
+
+## Mission completion
+
+Show:
+- Success message
+- Stars collected
+- Rewards unlocked
+- Replay button
+- Continue button
+
+---
+
+# 12. SOUND DESIGN
+
+Create an audio system supporting:
+- Background music
+- Vehicle engine
+- Acceleration and braking
+- Horn
+- Birds and ambient town sounds
+- Collectible effects
+- Menu interaction sounds
+- Mission completion music
+
+Audio must be gentle, cheerful, and comfortable for children.
+
+Support separate music and sound-effect volume controls.
+
+Initially use properly licensed placeholder audio or procedurally generated sounds.
+
+Document all audio asset sources and licenses.
+
+---
+
+# 13. NPC TRAFFIC AND ENVIRONMENT
+
+Later development stages should include:
+- Simple vehicle traffic
+- Pedestrians
+- Parked vehicles
+- Traffic lights
+- Moving environmental elements
+
+Traffic must be lightweight and predictable.
+
+No realistic collisions involving pedestrians.
+
+Use safe, nonviolent collision behavior.
+
+Provide optional simplified traffic settings.
+
+---
+
+# 14. SAVE SYSTEM
+
+Implement local save data.
+
+Save:
+- Unlocked missions
+- Collected stars
+- Unlocked rewards
+- Settings
+- Completed challenges
+
+Use Godot's user:// directory.
+
+Handle missing or invalid save data safely.
+
+The game must run fully offline.
+
+No telemetry, external accounts, or personal data collection.
+
+---
+
+# 15. PERFORMANCE
+
+Target a smooth 60 FPS at 1080p on a typical midrange Windows gaming PC.
+
+Optimize:
+- Mesh complexity
+- Materials
+- Draw calls
+- Environment visibility
+- Collision geometry
+- Dynamic shadows
+- NPC count
+- Asset loading
+
+Use reusable scene instances.
+
+Prefer simple geometry over overly detailed meshes.
+
+Use configurable graphics quality where useful.
+
+---
+
+# 16. DEVELOPMENT PHASES
+
+Work through the following milestones.
+
+## Phase 1 – Playable Prototype
+
+Create:
+- Godot project
+- Main scene
+- Ground plane
+- Basic road
+- Procedural cartoon Apollo model
+- Driving controller
+- Third-person camera
+- Basic controls
+- Minimal HUD
+
+Acceptance criteria:
+- Project opens without errors.
+- Apollo is visible.
+- Apollo can accelerate, brake, reverse, and steer.
+- Camera follows correctly.
+- Vehicle cannot fall through the ground under normal play.
+- Project is playable using keyboard controls.
+
+## Phase 2 – First Volpiano Environment
+
+Create:
+- Geographic map data pipeline
+- Local coordinate conversion
+- Road network
+- Basic sidewalks
+- Placeholder buildings
+- Starting area near Via Trento
+- Arrival area near Via Trieste
+- First drivable real-world-inspired route
+
+Acceptance criteria:
+- Correct approximate road topology.
+- Correct relative placement of start and destination.
+- Apollo can complete the route.
+- Geographic source data is documented.
+
+## Phase 3 – Cartoon Town
+
+Add:
+- Stylized buildings
+- Trees
+- Roads and signs
+- Main landmarks
+- Schools
+- Street furniture
+- Lighting improvements
+- Basic environmental decoration
+
+## Phase 4 – Playgrounds
+
+Create:
+- Playground scene template
+- Playground equipment
+- Real playground locations
+- Collectibles
+- Optional playground challenges
+- Exploration rewards
+
+## Phase 5 – Story and Missions
+
+Add:
+- Grandfather character
+- Granddaughter character
+- Dialogue system
+- Main school mission
+- Completion sequence
+- Mission rewards
+- Additional challenges
+
+## Phase 6 – Polish
+
+Improve:
+- Vehicle appearance
+- Animations
+- Audio
+- UI
+- Lighting
+- Performance
+- Save data
+- Controller support
+- Accessibility
+
+## Phase 7 – Final Windows Release
+
+Create:
+- Release build
+- Application icon
+- Export configuration
+- README
+- Installation and launch instructions
+- Testing checklist
+
+Produce an executable Windows game.
+
+---
+
+# 17. AI CODING RULES
+
+You are expected to write actual working code.
+
+Do not respond with generic explanations instead of implementation.
+
+For each development phase:
+
+1. Explain the goal in Italian.
+2. Identify the files that must be created or edited.
+3. Provide complete GDScript implementations.
+4. Create valid Godot scene files where practical.
+5. Explain required node hierarchies.
+6. Specify exact node names and script paths.
+7. Include input mappings.
+8. Provide precise installation and execution instructions.
+9. Identify test procedures.
+10. Explain possible errors and fixes.
+
+Do not use pseudocode for essential functionality.
+
+Do not omit required method implementations.
+
+Do not reference assets that do not exist without providing placeholders.
+
+Keep code and scenes modular.
+
+## Cursor-specific instructions
+
+If operating inside Cursor with access to the project filesystem:
+
+- Inspect existing files before making changes.
+- Write and modify project files directly.
+- Do not overwrite completed functionality unnecessarily.
+- Keep the Godot project launchable after every milestone.
+- Run available validation commands where possible.
+- Fix parse errors and resource path problems.
+- Clearly report tests performed and tests not performed.
+- Do not claim that a game was tested unless it was actually run or validated.
+- Commit only if explicitly instructed.
+
+If operating in ChatGPT without direct filesystem access, produce complete file contents and clear directory structures.
+
+---
+
+# 18. PROJECT MANAGEMENT
+
+Maintain the following project documents:
+
+- README.md
+- DEVELOPMENT_PLAN.md
+- PROJECT_STATUS.md
+- CHANGELOG.md
+- ASSET_CREDITS.md
+
+PROJECT_STATUS.md must contain:
+- Current milestone
+- Completed work
+- Pending work
+- Known bugs
+- Next actions
+
+Update project documentation as implementation progresses.
+
+Avoid expanding scope before the current milestone works.
+
+Prioritize a playable game over unnecessary architectural complexity.
+
+---
+
+# 19. FINAL EXPERIENCE
+
+The final experience should feel personal.
+
+The granddaughter should recognize:
+- Apollo
+- Her grandfather
+- Her school journey
+- The town of Volpiano
+- Familiar streets
+- Local playgrounds
+
+The emotional goal is to transform an ordinary daily trip to school into a small, memorable adventure.
+
+The game should be fun even for a player unfamiliar with Volpiano.
+
+---
+
+# 20. START DEVELOPMENT NOW
+
+Begin immediately with Phase 1.
+
+First:
+1. Select the Godot stable version and explain the choice.
+2. Define the minimal project architecture.
+3. Create the necessary project configuration.
+4. Implement a procedural white cartoon van.
+5. Implement a functional arcade driving controller.
+6. Implement a smooth third-person camera.
+7. Create a simple drivable test scene.
+8. Add Italian on-screen control instructions.
+9. Configure input actions.
+10. Provide a reproducible test procedure.
+
+Do not start building the entire Volpiano map yet.
+
+Do not stop after describing the plan.
+
+Produce a genuinely playable first milestone.
+
+If you have filesystem access, create the project files directly.
+
+If you cannot access the filesystem, generate complete files with their exact paths and contents.
+
+After Phase 1, summarize implemented functionality, known limitations, and the next milestone.
+
+**BEGIN PHASE 1 IMPLEMENTATION.**

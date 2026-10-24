@@ -1,0 +1,64 @@
+{
+  "verified_on": "2026-10-17",
+  "parks": [
+    {
+      "id": "madonna",
+      "name": "Madonna delle Grazie",
+      "lat": 45.2003445,
+      "lon": 7.7819699,
+      "osm_way": 375496621,
+      "size": [
+        8,
+        13
+      ],
+      "yaw": 0.5235987755982988,
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-piazza-madonna-delle-grazie-23802-1-6c13d3e1a5604c456988a0fedf287c3b",
+      "precision": "Area giochi OSM, associata alla scheda comunale della piazza; allestimento illustrativo."
+    },
+    {
+      "id": "san_grato",
+      "name": "San Grato",
+      "lat": 45.1918597,
+      "lon": 7.7734769,
+      "size": [
+        5.5,
+        16
+      ],
+      "yaw": 0.0,
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-san-grato-23803-1-591faac194ac2357330ae2c7618db30b",
+      "precision": "Pin comunale; confini e disposizione dei giochi approssimati. Ingombro illustrativo adattato allo spazio libero rispetto alle strade OSM."
+    }
+  ],
+  "pending": [
+    {
+      "id": "de_gasperi",
+      "name": "Alcide De Gasperi",
+      "lat": 45.2049154,
+      "lon": 7.7756619,
+      "reason": "Il pin comunale ricade nell'impronta OSM della scuola Ghirotti; occorre localizzare l'area di fronte alla scuola.",
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-alcide-de-gasperi-23805-1-5c796ff1a899ae935e623c1076e6db56"
+    },
+    {
+      "id": "pertini",
+      "name": "Sandro Pertini",
+      "lat": 45.1944329,
+      "lon": 7.7706178,
+      "reason": "Il pin comunale è presso l'incrocio Via Padova/Via Canova; perimetro del parco non ancora associato con certezza.",
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-sandro-pertini-23804-1-8c6bbad94cd5e527206b7e42c4f83ec8"
+    },
+    {
+      "id": "riviera",
+      "name": "Riviera",
+      "lat": 45.2051456,
+      "lon": 7.7850319,
+      "size": [
+        14,
+        18
+      ],
+      "yaw": 0.0,
+      "source": "https://www.comune.volpiano.to.it/it-it/vivere-il-comune/cosa-vedere/area-giochi-riviera-27418-1-9fe8f60a0a35d99b1a3da5ca7194714c",
+      "precision": "Pin comunale; confini e disposizione dei giochi approssimati. La scheda descrive una recinzione chiusa: visita virtuale senza accesso del furgone.",
+      "reason": "Il pin comunale ? vicino a impronte residenziali OSM: un allestimento attorno al punto si sovrappone alle case. Perimetro da verificare; nessuna area giochi spostata arbitrariamente."
+    }
+  ]
+}

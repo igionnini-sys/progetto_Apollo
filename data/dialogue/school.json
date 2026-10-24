@@ -1,0 +1,28 @@
+{
+  "intro": [
+    {"speaker":"grandfather","text":"Pronta per una nuova avventura, comandante?"},
+    {"speaker":"granddaughter","text":"Zaino pronto! Si parte con Apollo!"},
+    {"speaker":"grandfather","text":"Prima le cinture. Un clic per te, un clic per me… e via con calma!"}
+  ],
+  "parking_intro": [
+    {"speaker":"grandfather","text":"Oggi alleniamo il parcheggio perfetto: tre soste, nessuna fretta."},
+    {"speaker":"granddaughter","text":"Missione morbida come un cuscino! Cinture allacciate?"},
+    {"speaker":"grandfather","text":"Allacciate! Seguiamo i cerchi azzurri e fermiamoci con cura."}
+  ],
+  "ending": [
+    {"speaker":"grandfather","text":"Apollo è fermo. Ora proseguiamo a piedi, mano nella mano."},
+    {"speaker":"granddaughter","text":"Eccoci a scuola! Grazie, Apollo, il mio furgone spaziale!"},
+    {"speaker":"grandfather","text":"Un abbraccio, comandante. Ti aspetto per la prossima avventura!"}
+  ],
+  "parking_ending": [
+    {"speaker":"granddaughter","text":"Tre soste morbide! Apollo merita una medaglia."},
+    {"speaker":"grandfather","text":"Medaglia di pilota gentile: consegnata!"}
+  ],
+  "departure":{"speaker":"granddaughter","text":"Apollo, motori della fantasia accesi!"},
+  "midway":{"speaker":"grandfather","text":"Che bel viaggio. Piano piano, comandante, ci godiamo Volpiano."},
+  "traffic":{"speaker":"grandfather","text":"Semaforo rosso: ci fermiamo e aspettiamo insieme il verde."},
+  "green":{"speaker":"granddaughter","text":"Verde! Ripartiamo con calma."},
+  "star":{"speaker":"granddaughter","text":"Una stella per Apollo! Che bella scoperta!"},
+  "parking":{"speaker":"grandfather","text":"Sosta perfetta! Apollo ha le ruote di velluto."},
+  "arrival":{"speaker":"grandfather","text":"Ci siamo quasi. Fermiamo Apollo nel cerchio azzurro."}
+}

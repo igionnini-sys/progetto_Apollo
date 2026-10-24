@@ -1,0 +1,26 @@
+{
+  "make": "FIAT",
+  "model": "Ducato",
+  "generation": "X250, frontale precedente al restyling 2014",
+  "year": 2010,
+  "engine": {
+    "name": "2.2 MultiJet 100",
+    "power_ps": 100,
+    "power_kw": 74,
+    "code": "4HV",
+    "emissions": "Euro 4"
+  },
+  "body": {
+    "variant": "L2H2",
+    "wheelbase": "medio",
+    "roof": "alto",
+    "length_m": 5.413,
+    "width_m": 2.05,
+    "height_m": 2.524,
+    "wheelbase_m": 3.45
+  },
+  "appearance": {
+    "paint": "bianco",
+    "source": "Variante e motore confermati dall'utente; dettagli personali da fotografie non ancora disponibili"
+  }
+}
