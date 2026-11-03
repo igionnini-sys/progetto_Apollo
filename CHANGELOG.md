@@ -1,5 +1,27 @@
 # Registro modifiche
 
+## 3 novembre 2026 — Percorso reale verso la scuola
+
+- Il percorso della Missione Scuola segue ora il tragitto di Apollo: Via Trento, Via Pasubio fino in fondo, Via Novara a destra con il sottopasso ferroviario, poi tutta Via Trieste (SP3) fino alla scuola primaria (circa 1,25 km invece di 670 m su Via Trento/Via Brandizzo). `tools/build_story_route.py` impone le tappe Pasubio → Novara → sottopasso → Trieste e verifica l'ordine; nuovo test dati.
+- `tools/import_osm.py`: le strade primarie sono percorribili e Via Trieste non è più esclusa; mappa rigenerata (compaiono anche Via Casne e Corso Europa). `tests/map_test.py` aggiornato.
+- Il semaforo della storia, regola di gioco, passa all'incrocio Via Trieste / Via Fiume (nodo OSM 921141638): il mondo lo aggiunge se il nodo non ha un impianto OSM.
+- Casa: il recinto del giardino si ferma a 17,6 m dal cancello; l'ultimo pilastro finiva dentro Via Pasubio e bloccava la partenza. In `local/home_departure.json` il raccordo pubblico è ora l'incrocio Via Trento / Via Pasubio.
+- `tests/story_test.gd`: il tempo massimo per tratto cresce con la distanza (Via Pasubio è un unico tratto da 215 m). Storia: 70 controlli, 72 con `--with-home`, 0 errori.
+
+## 2 novembre 2026 — Casa di Apollo, nuove foto
+
+- Dalle nuove foto: palme a ventaglio con chioma folta e tronco fibroso, ante del cancello in ferro battuto grigio scuro, palo di legno con cavi verso la casa accanto alla recinzione, e sul fronte opposto (visto dal vicolo) finestre, porta e finestrino del timpano. Test del cancello superati (7 controlli), catture aggiornate.
+- Dall'altra parte di Via Trento, davanti al cancello: vicolo di ghiaia con cancello scuro aperto, palazzo di cinque piani a sinistra (mattoni, fasce crema, balconi con ringhiera scura, cancello bianco), capannone rosso a destra con portone di assi e nastro bianco e rosso, e in fondo la casa della bambina (due piani arancioni, timpano verso la strada, annesso basso). Sostituiscono tre edifici OSM (`replace_buildings` in `local/home_departure.json`). Posizione e dimensioni stimate dalla foto.
+- Introduzione della Missione Scuola ampliata da 3 a 8 battute: nonno e nipotina si chiedono se Apollo oggi sta bene e se ha voglia di partire, scherzando sul fatto che ormai è anziano. Il test della storia segue ora l'intera introduzione (58 controlli superati).
+
+## 1 novembre 2026 — Casa di Apollo dalla foto su Via Trento
+
+- Nuova foto dell'utente presa da Via Trento verso l'incrocio con Via Montenero. La casa torna sull'impronta OSM d'angolo, con il timpano giallo verso la strada. Il balcone lungo non sta più sul lato strada ma sul fianco arancione verso il cortile, con parapetti bianchi agli estremi, ringhiera, mensole e gerani.
+- La scala esterna sale verso la strada fino a un pianerottolo, subito dietro un cancelletto pedonale fra due pilastri in mattoni. Lungo il marciapiede, in ordine: il cancelletto, il cancello carraio chiaro con la cimasa ad arco e le lance, poi la recinzione su muretto davanti al giardino con due palme e alberi.
+- Tetto con falde ampie e travetti scuri, abbaino con timpano sulla falda del cortile, due comignoli, piano rialzato con zoccolo. I gradini sono a sbalzo su una soletta inclinata; la rampa ha un unico ingombro per le collisioni.
+- Le ante si aprono a 92°, così restano fuori dalla scala. Apollo parte nel cortile a 7 m dal cancello, con il muso fuori dalla corsa delle ante. Il test del cancello parte dalla stessa posizione.
+- Verifiche superate: cancello (7 controlli), Volpiano, città e storia, sia con i dati pubblici (49 controlli di storia) sia con `-- --with-home` (58). Catture aggiornate in `build/verifica/casa-apollo-*.png`.
+
 ## 24 ottobre 2026 — Casa e cancello di partenza
 
 - Ricostruzione esterna dalla foto fornita dall'utente: intonaco arancione, persiane brune, balcone rialzato, scala con ringhiere, abbaino, pilastri in mattoni, recinzione e palma a ventaglio. Ante con apertura automatica e collisioni mobili.

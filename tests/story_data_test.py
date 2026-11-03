@@ -15,11 +15,22 @@ class StoryDataTests(unittest.TestCase):
         self.assertFalse(story['metadata']['school_vehicle_access_verified'])
         self.assertGreater(story['metadata']['length_m'], 600)
 
-    def test_traffic_point_is_mapped(self):
+    def test_route_follows_pasubio_novara_trieste(self):
         town = json.loads((ROOT/'data/map/volpiano.json').read_text(encoding='utf-8'))
         story = json.loads((ROOT/'data/map/story_route.json').read_text(encoding='utf-8'))
-        mapped = {str(p['id']) for p in town['features'] if p['kind'] == 'traffic_signals'}
-        self.assertIn(story['traffic_node'], mapped)
+        names = {}
+        for road in town['roads']:
+            for p in road['points']:
+                names.setdefault(tuple(p), set()).add(road['name'])
+        order = [next(iter(n for n in ('Via Pasubio', 'Via Novara', 'Via Trieste') if n in names[tuple(town['nodes'][i])]), '') for i in story['route']]
+        order = [n for n in order if n]
+        first = {n: order.index(n) for n in ('Via Pasubio', 'Via Novara', 'Via Trieste')}
+        self.assertLess(first['Via Pasubio'], first['Via Novara'])
+        self.assertLess(first['Via Novara'], first['Via Trieste'])
+        self.assertEqual(order[-1], 'Via Trieste')
+
+    def test_traffic_point_is_on_route(self):
+        story = json.loads((ROOT/'data/map/story_route.json').read_text(encoding='utf-8'))
         self.assertIn(story['traffic_node'], story['route'][1:-1])
 
     def test_dialogue_roles_and_sequences(self):

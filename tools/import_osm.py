@@ -10,7 +10,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 BBOX = (45.185, 7.758, 45.211, 7.788)
 ORIGIN = (45.198, 7.773)
-DRIVABLE = {'residential', 'unclassified', 'tertiary', 'secondary', 'living_street', 'service'}
+DRIVABLE = {'primary', 'residential', 'unclassified', 'tertiary', 'secondary', 'living_street', 'service'}
 QUERY = ('[out:json][timeout:60];('
          f'way["highway"]{BBOX};way["building"]{BBOX};'
          f'relation["type"="restriction"]{BBOX};);out body;>;out skel qt;')
@@ -107,8 +107,8 @@ def convert(raw, origin=ORIGIN, scale=1.0):
                               'levels': tags.get('building:levels', ''),
                               'roof_shape': tags.get('roof:shape', ''),
                               'commercial': tags.get('building') in {'retail', 'commercial'} or 'shop' in tags})
-        # Via Trieste esclusa dalla guida in attesa di verifica della strada scolastica.
-        allowed = accessible(tags) and e['id'] not in restricted and tags.get('name') != 'Via Trieste'
+        # Via Trieste (SP3) percorribile: è la strada reale verso la scuola primaria.
+        allowed = accessible(tags) and e['id'] not in restricted
         if 'highway' not in tags:
             continue
         roads.append({'id': e['id'], 'name': tags.get('name', ''), 'points': [locations[n] for n in ids],
@@ -127,7 +127,7 @@ def convert(raw, origin=ORIGIN, scale=1.0):
                          'license': 'ODbL 1.0', 'source_timestamp': raw.get('osm3s', {}).get('timestamp_osm_base'),
                          'bbox': BBOX, 'origin': origin, 'scale': scale,
                          'school_access_verified': False,
-                         'restriction_policy': 'Exclude all ways in turn restriction relations; exclude conditional access and Via Trieste'},
+                         'restriction_policy': 'Exclude all ways in turn restriction relations; exclude conditional access'},
             'nodes': nodes, 'edges': edges, 'roads': roads, 'buildings': buildings}
 
 

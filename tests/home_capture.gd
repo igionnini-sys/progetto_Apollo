@@ -24,8 +24,9 @@ func run() -> void:
 	main.add_child(camera)
 	camera.fov = 70.0
 	camera.current = true
-	camera.position = home.to_global(Vector3(1, 2.8, -7.5))
-	camera.look_at(home.to_global(Vector3(3.0, 3.3, 6.5)))
+	# Come la foto dell'utente: dal marciapiede a sud del cancello verso l'incrocio.
+	camera.position = home.to_global(Vector3(-8.5, 2.2, -2.2))
+	camera.look_at(home.to_global(Vector3(6.0, 3.6, 4.5)))
 	await shot("cancello")
 	main.start()
 	main.vehicle.enabled = false
@@ -36,8 +37,8 @@ func run() -> void:
 	main.camera_rig.get_node("SpringArm3D/Camera3D").current = true
 	await shot("partenza")
 	camera.current = true
-	camera.position = home.to_global(Vector3(-12, 7.2, -12))
-	camera.look_at(home.to_global(Vector3(5, 3.5, 7)))
+	camera.position = home.to_global(Vector3(-14, 13, -13))
+	camera.look_at(home.to_global(Vector3(5, 2.5, 6)))
 	await shot("casa")
 	main.queue_free()
 	await process_frame

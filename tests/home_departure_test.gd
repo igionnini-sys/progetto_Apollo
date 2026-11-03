@@ -32,7 +32,7 @@ func run() -> void:
 	home.automatic = false
 	scene.add_child(home)
 	var vehicle: CharacterBody3D = load("res://scenes/vehicles/apollo.tscn").instantiate()
-	vehicle.position = Vector3(0, 0.15, 7)
+	vehicle.position = Vector3(0, 0.15, Home.SPAWN_DEPTH)
 	vehicle.enabled = false
 	scene.add_child(vehicle)
 	home.vehicle = vehicle
@@ -46,11 +46,11 @@ func run() -> void:
 	check(home.opening > 0.99 and opened.is_empty(), "Il cancello si apre automaticamente e libera il varco")
 	vehicle.enabled = true
 	Input.action_press("accelerate")
-	await frames(160)
+	await frames(280)
 	Input.action_release("accelerate")
-	check(vehicle.position.z < -4.0 and vehicle.is_on_floor(), "Apollo esce dal cortile guidando fra i pilastri")
+	check(vehicle.position.z < -4.0 and vehicle.is_on_floor(), "Apollo attraversa il cortile ed esce fra i pilastri")
 	vehicle.reset_vehicle()
-	check(vehicle.position.distance_to(Vector3(0, 0.15, 7)) < 0.1, "Reset alla partenza dentro casa")
+	check(vehicle.position.distance_to(Vector3(0, 0.15, Home.SPAWN_DEPTH)) < 0.1, "Reset alla partenza dentro casa")
 	scene.queue_free()
 	await process_frame
 	await process_frame

@@ -63,7 +63,7 @@ func run() -> void:
 	main.menu()
 	main.start()
 	check(main.dialogue.index == 0 and main.story_state == "intro", "Abbandono e riavvio ripartono dall'introduzione")
-	for i in 3:
+	while main.story_state == "intro":
 		next_line(main)
 	check(not paused and main.vehicle.enabled and main.mission.active and main.story_state == "driving", "Fine introduzione attiva la guida")
 	main.toggle_pause()
@@ -87,7 +87,7 @@ func run() -> void:
 		else:
 			main.vehicle.max_speed = 3.0
 			Input.action_press("accelerate")
-			for step in 3600:
+			for step in maxi(3600, ceili(offset.length() / 3.0 * 75.0)):
 				if Vector2(main.vehicle.position.x-target.x, main.vehicle.position.z-target.z).length() < target_radius:
 					reached = true
 					break

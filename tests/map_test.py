@@ -11,7 +11,7 @@ from import_osm import accessible, convert, direction, project, shortest, road_p
 
 class MapTests(unittest.TestCase):
     def test_road_appearance_independent_of_access(self):
-        for tags in [{'highway': 'primary'}, {'highway': 'tertiary', 'access': 'private'}]:
+        for tags in [{'highway': 'tertiary', 'access': 'private'}]:
             self.assertTrue(road_profile(tags)['carriageway'])
             self.assertFalse(accessible(tags))
         self.assertFalse(road_profile({'highway': 'footway'})['carriageway'])
@@ -66,7 +66,7 @@ class MapTests(unittest.TestCase):
         self.assertTrue(all((a, b) in edges for a, b in zip(route, route[1:])))
         self.assertGreater(sum(math.dist(data['nodes'][a], data['nodes'][b]) for a, b in zip(route, route[1:])), 400)
         self.assertFalse(data['metadata']['school_access_verified'])
-        self.assertTrue(all(not r['drivable'] for r in data['roads'] if r['name'] == 'Via Trieste'))
+        self.assertTrue(any(r['drivable'] for r in data['roads'] if r['name'] == 'Via Trieste'))
         self.assertNotIn('addr:housenumber', json.dumps(data))
 
     def test_town_source_data(self):

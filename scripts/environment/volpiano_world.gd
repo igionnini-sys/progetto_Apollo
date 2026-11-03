@@ -43,6 +43,13 @@ func _ready() -> void:
 	if story_id != "":
 		story_data = JSON.parse_string(FileAccess.get_file_as_string("res://data/map/story_route.json"))
 		data.route = story_data.route
+		# Il semaforo della storia è una regola di gioco: senza impianto OSM sul nodo lo aggiungiamo qui.
+		var signal_id := int(story_data.traffic_node)
+		var has_signal := false
+		for feature: Dictionary in data.get("features", []):
+			has_signal = has_signal or (int(feature.id) == signal_id and feature.kind == "traffic_signals")
+		if not has_signal:
+			data.features.append({"id": signal_id, "kind": "traffic_signals", "point": data.nodes[str(story_data.traffic_node)]})
 	if park_id != "":
 		var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/map/parks.json"))
 		for park: Dictionary in catalog.parks:
@@ -58,6 +65,7 @@ func _ready() -> void:
 			home.rotation.y = deg_to_rad(float(home_config.get("yaw_degrees", 0.0)))
 			add_child(home)
 			town.footprints.append(home.world_outline())
+			town.footprints.append(home.lane_world_outline())
 	trento.prepare(data.roads)
 	town.reference = trento
 	town.register_roads(data.roads)

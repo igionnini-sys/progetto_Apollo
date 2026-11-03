@@ -14,11 +14,11 @@ Dalla Fase 6 medaglie, sblocco e record delle stelle vengono salvati su disco in
 
 ## Limite geografico della versione racconto
 
-Il punto di partenza non identifica l'abitazione privata. La sosta finale è un obiettivo illustrativo su un nodo di Via Brandizzo, a circa 109 m in linea d'aria dal punto mappa scolastico; **non è un posto auto censito né un ingresso carrabile verificato**. Non si entra in Via Trieste con Apollo. Il passaggio narrativo a piedi non certifica un percorso pedonale o un cancello utilizzabile oggi.
+Il punto di partenza non identifica l'abitazione privata. La sosta finale è un obiettivo illustrativo su un nodo di Via Trieste, a circa 30 m in linea d'aria dal punto mappa scolastico; **non è un posto auto censito né un ingresso carrabile verificato**. Il passaggio narrativo a piedi non certifica un percorso pedonale o un cancello utilizzabile oggi.
 
 Il [Comune, avviso del 9 settembre 2022](https://www.comune.volpiano.to.it/it-it/novita/avvisi/2022/viabilita/modifiche-alla-viabilita-negli-orari-di-entrata-e-uscita-scolastica-251675-1-20c1a67f082208876179e82838539976), descrive divieti scolastici su Via Trieste fra Via Brandizzo e Via Fiume e sul piazzale della sala polivalente, nelle fasce 8–9, 12–13 e 16–17, con deroghe. Il documento aiuta a delimitare la ricerca, ma non basta a certificare accessi e sosta attuali. Resta aperta la verifica della Fase 2 prima del tragitto definitivo dalla partenza privata.
 
-`data/map/story_route.json` conserva `preview=true` e `school_vehicle_access_verified=false`. `python tools/build_story_route.py` rigenera il percorso dal grafo pubblico, usando archi accessibili e senza modificare i dati OSM. La posizione del semaforo corrisponde al nodo OSM **286093393**. Arresto richiesto, colori e tempi sono regole di gioco, non riproduzioni dell'impianto reale.
+`data/map/story_route.json` conserva `preview=true` e `school_vehicle_access_verified=false`. `python tools/build_story_route.py` rigenera il percorso dal grafo pubblico, usando archi accessibili e senza modificare i dati OSM. Il percorso è Via Trento → Via Pasubio → Via Novara a destra → sottopasso → tutta Via Trieste (SP3) fino alla scuola primaria; Via Trieste ora è percorribile nel grafo. Il semaforo è una regola di gioco sul nodo OSM **921141638** (incrocio con Via Fiume), non un impianto censito. Arresto richiesto, colori e tempi sono regole di gioco, non riproduzioni dell'impianto reale.
 
 ## Personaggi configurabili
 
