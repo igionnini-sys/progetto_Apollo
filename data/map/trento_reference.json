@@ -1,7 +1,10 @@
 {
   "metadata": {
     "source": "Schermate Street View fornite dall'utente il 24 ottobre 2026",
-    "image_dates": ["luglio 2025", "novembre 2020"],
+    "image_dates": [
+      "luglio 2025",
+      "novembre 2020"
+    ],
     "geometry": "Impronte e ponticello OSM; altezze, colori e dettagli stimati dalle viste esterne",
     "building_matches_verified": false,
     "note": "Associazioni degli edifici alle foto provvisorie; nessuna immagine Google distribuita come texture"
@@ -9,13 +12,218 @@
   "road_width_estimate": 6.6,
   "sidewalk_width_estimate": 1.15,
   "profiles": {
-    "901221176": {"style": "apartment", "height": 10.8, "color": "eee4d2", "accent": "b67965", "window": "roller", "balcony": "continuous", "base_height": 2.8},
-    "901221175": {"style": "house", "height": 6.3, "color": "ece7da", "accent": "ad7661", "window": "roller", "balcony": "continuous", "base_height": 0.8},
-    "904091086": {"style": "apartment", "height": 14.4, "color": "e0d0a1", "accent": "aa625a", "window": "roller", "balcony": "continuous", "base_height": 2.9},
-    "904091089": {"style": "house", "height": 7.0, "color": "d89e83", "accent": "dcd2bd", "window": "shutter", "balcony": "none", "base_height": 0.8},
-    "904091091": {"style": "house", "height": 6.5, "color": "ede7d6", "accent": "d0c5af", "window": "shutter", "balcony": "individual", "base_height": 1.4},
-    "904461102": {"style": "barn", "height": 4.5, "color": "a3957f", "accent": "8b6951", "window": "barn", "balcony": "none", "base_height": 0.6},
-    "907689231": {"style": "house", "height": 6.4, "color": "d4b69b", "accent": "a9a697", "window": "shutter", "balcony": "individual", "base_height": 1.8},
-    "907689228": {"style": "house", "height": 4.5, "color": "ad5d55", "accent": "bbb5a6", "window": "roller", "balcony": "none", "base_height": 0.6}
+    "901221176": {
+      "style": "apartment",
+      "height": 10.8,
+      "color": "eee4d2",
+      "accent": "b67965",
+      "window": "roller",
+      "balcony": "continuous",
+      "base_height": 2.8
+    },
+    "901221175": {
+      "style": "house",
+      "height": 6.3,
+      "color": "ece7da",
+      "accent": "ad7661",
+      "window": "roller",
+      "balcony": "continuous",
+      "base_height": 0.8
+    },
+    "904091086": {
+      "style": "apartment",
+      "height": 14.4,
+      "color": "e0d0a1",
+      "accent": "aa625a",
+      "window": "roller",
+      "balcony": "continuous",
+      "base_height": 2.9
+    },
+    "904091089": {
+      "style": "house",
+      "height": 7.0,
+      "color": "d89e83",
+      "accent": "dcd2bd",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.8
+    },
+    "904091091": {
+      "style": "house",
+      "height": 6.5,
+      "color": "ede7d6",
+      "accent": "d0c5af",
+      "window": "shutter",
+      "balcony": "individual",
+      "base_height": 1.4
+    },
+    "904461102": {
+      "style": "barn",
+      "height": 4.5,
+      "color": "a3957f",
+      "accent": "8b6951",
+      "window": "barn",
+      "balcony": "none",
+      "base_height": 0.6
+    },
+    "907689231": {
+      "style": "house",
+      "height": 6.4,
+      "color": "d4b69b",
+      "accent": "a9a697",
+      "window": "shutter",
+      "balcony": "individual",
+      "base_height": 1.8
+    },
+    "907689228": {
+      "style": "house",
+      "height": 4.5,
+      "color": "ad5d55",
+      "accent": "bbb5a6",
+      "window": "roller",
+      "balcony": "none",
+      "base_height": 0.6
+    },
+    "906756076": {
+      "style": "house",
+      "height": 6.9,
+      "color": "e8dbb0",
+      "accent": "b5553d",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.6,
+      "bands": true
+    },
+    "906756075": {
+      "style": "house",
+      "height": 6.4,
+      "color": "e3d3b2",
+      "accent": "a9654d",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906756077": {
+      "style": "house",
+      "height": 6.6,
+      "color": "f0eadf",
+      "accent": "c0553b",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.6,
+      "bands": true
+    },
+    "906756078": {
+      "style": "house",
+      "height": 6.8,
+      "color": "dba58e",
+      "accent": "b8553e",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.9
+    },
+    "906756079": {
+      "style": "house",
+      "height": 6.5,
+      "color": "d49a7e",
+      "accent": "a45a43",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.9
+    },
+    "906756081": {
+      "style": "house",
+      "height": 5.6,
+      "color": "e0a58a",
+      "accent": "b8553e",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.9
+    },
+    "906756080": {
+      "style": "house",
+      "height": 6.8,
+      "color": "ead9a0",
+      "accent": "7aa88a",
+      "window": "barred",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906756082": {
+      "style": "house",
+      "height": 6.5,
+      "color": "e6dccb",
+      "accent": "b9a98f",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906756083": {
+      "style": "house",
+      "height": 6.2,
+      "color": "d9b99a",
+      "accent": "a9654d",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906756085": {
+      "style": "house",
+      "height": 6.9,
+      "color": "7f95a6",
+      "accent": "e8e6e0",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.5
+    },
+    "906583487": {
+      "style": "house",
+      "height": 6.4,
+      "color": "ece0c6",
+      "accent": "b9a98f",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906583481": {
+      "style": "house",
+      "height": 5.8,
+      "color": "e6c9b0",
+      "accent": "a9654d",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906583482": {
+      "style": "house",
+      "height": 6.6,
+      "color": "f0e8d6",
+      "accent": "b9a98f",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906583478": {
+      "style": "house",
+      "height": 5.8,
+      "color": "d9b69b",
+      "accent": "a9654d",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    },
+    "906583477": {
+      "style": "house",
+      "height": 6.0,
+      "color": "e8e0cf",
+      "accent": "b9a98f",
+      "window": "shutter",
+      "balcony": "none",
+      "base_height": 0.7
+    }
+  },
+  "pasubio": {
+    "road_width_estimate": 4.6,
+    "note": "Da sei schermate Street View dell'utente (novembre 2020 e giugno 2026). Via a senso unico stretta, senza marciapiedi; associazioni foto/edifici provvisorie."
   }
 }

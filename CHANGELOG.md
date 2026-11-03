@@ -1,5 +1,33 @@
 # Registro modifiche
 
+## 3 novembre 2026 — Il plesso scolastico dalle foto
+
+- Nuovo modulo `scripts/environment/school_building.gd`: il plesso di Via Trieste (impronta OSM 215468999) ha pareti in mattoni rossi alte 4 m, finestre a nastro con montanti chiari, ampia gronda in lamiera chiara su pilastri di cemento lungo i fronti lunghi e copertura piana chiara. Un corpo alto centrale in mattoni con finestre a nastro, un'ala verde in fondo con riquadri rossi, ingresso con arco verde, rastrelliere con pilastrini neri e piazzale d'asfalto davanti.
+- Resta l'arcobaleno cartoon sopra l'ingresso. Il corpo alto è posizionato a stima sull'impronta irregolare. Catture: `tests/school_capture.gd`.
+
+## 3 novembre 2026 — Via Trieste e scuola dalle foto
+
+- Nuovo modulo `scripts/environment/trieste_street.gd`. Via Trieste (SP3) ha carreggiata di 7,2 m, mezzeria tratteggiata, bordi bianchi e marciapiedi in autobloccanti rosati di 1,6 m su entrambi i lati.
+- Lungo la via, a rotazione: recinzioni bianche su muretto, reti metalliche verdi, siepi, cancelli con pilastri in pietra. Guard-rail lungo il fosso a ovest, rete alta sul lato del capannone. Lampioni alti con braccio, attraversamenti rialzati con fasce arancioni e cartelli blu, scritte "SP3" e "Via Trieste" sull'asfalto.
+- Facciate delle case entro 24 m dalla via: toni arancio, verde, giallo e grigio, palazzine a tre piani quando l'impronta è grande.
+- Scuola: piazzale in autobloccanti all'angolo con Via Fiume con aiuola e rete, auto di traverso su due file, transenne rosse e segnale scolastico. In Via Fiume auto parcheggiate sui due bordi.
+- Arredi solo visivi, senza collisioni. Storia con casa: 72 controlli, 0 errori. Catture: `tests/trieste_capture.gd`.
+
+## 3 novembre 2026 — Sottopasso di Via Novara dalle foto
+
+- Nuovo modulo `scripts/environment/novara_underpass.gd`. Il sottopasso (way OSM 125508945) è ora una trincea di cemento: muri di contenimento solidi ai due lati (alti fino a 4,4 m, con rampe di 40 m a ogni estremo), segni dei casseri, scritte graffiti, balaustra metallica e lampioni sul ciglio da un lato, scarpata secca con steccato della ferrovia dall'altro.
+- Ponte ferroviario sopra la strada: impalcato in cemento, rotaie, parapetti, pali e linea di contatto; sotto, il limite di altezza 3,60 m e il semaforo. Posizione stimata dalla vista aerea.
+- Strada a due corsie (6,4 m, senza marciapiedi) con mezzeria continua, bordi bianchi e croci sull'asfalto.
+- Imbocco da Via Pasubio: parcheggio in autobloccanti con strisce d'erba, auto ferme, steccato verso la ferrovia e segnali di parcheggio e divieto.
+- Muri e ponte occupano il suolo per gli arredi automatici (nessun albero dentro la trincea). Storia con casa: 72 controlli, 0 errori. Catture: `tests/novara_capture.gd`.
+
+## 3 novembre 2026 — Via Pasubio dalle foto
+
+- Via Pasubio rimodellata da sei schermate Street View: carreggiata stretta (4,6 m invece di 6), senza marciapiedi, asfalto con crepe e scritte "Via Pasubio" a terra, cartello di divieto di fermata all'imbocco.
+- Lato nord: recinzioni bianche su muretto, cancelli di ferro con pilastri in pietra e siepi. Lato sud: siepi d'edera su muretto, reti verdi, dissuasori giallo-neri. Lampioni sottili sul lato nord.
+- Facciate dei 15 edifici lungo la via con profili dalle foto: fabbricati a fasce di mattoni rossi su intonaco chiaro, case salmone, palazzina gialla con inferriate verdi, casa azzurra in fondo verso Via Novara. Associazioni foto/edificio provvisorie. Nuovi stili `bands` e `barred` in `trento_reference.gd`; profili in `trento_reference.json`.
+- Recinzioni e arredi sono solo visivi, senza collisioni. Storia con casa: 72 controlli, 0 errori. Catture: `tests/pasubio_capture.gd` (`build/verifica/pasubio-*.png`).
+
 ## 3 novembre 2026 — Percorso reale verso la scuola
 
 - Il percorso della Missione Scuola segue ora il tragitto di Apollo: Via Trento, Via Pasubio fino in fondo, Via Novara a destra con il sottopasso ferroviario, poi tutta Via Trieste (SP3) fino alla scuola primaria (circa 1,25 km invece di 670 m su Via Trento/Via Brandizzo). `tools/build_story_route.py` impone le tappe Pasubio → Novara → sottopasso → Trieste e verifica l'ordine; nuovo test dati.

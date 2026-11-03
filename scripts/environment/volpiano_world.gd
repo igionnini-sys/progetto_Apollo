@@ -8,6 +8,8 @@ const TownStyle = preload("res://scripts/environment/town_style.gd")
 const Playground = preload("res://scripts/environment/playground.gd")
 const StoryTraffic = preload("res://scripts/environment/story_traffic_light.gd")
 const TrentoReference = preload("res://scripts/environment/trento_reference.gd")
+const NovaraUnderpass = preload("res://scripts/environment/novara_underpass.gd")
+const TriesteStreet = preload("res://scripts/environment/trieste_street.gd")
 const HomeDeparture = preload("res://scripts/environment/home_departure.gd")
 ## Quote delle superfici rispetto al terreno (sommità a -0,1 m).
 const SIDEWALK_Y = -0.085
@@ -21,6 +23,8 @@ var park_data: Dictionary = {}
 var playground: Node3D
 var town = TownStyle.new()
 var trento = TrentoReference.new()
+var underpass = NovaraUnderpass.new()
+var trieste = TriesteStreet.new()
 var home: Node3D
 var home_config: Dictionary = {}
 var town_stats: Dictionary = {}
@@ -67,6 +71,8 @@ func _ready() -> void:
 			town.footprints.append(home.world_outline())
 			town.footprints.append(home.lane_world_outline())
 	trento.prepare(data.roads)
+	underpass.prepare(data.roads)
+	trieste.prepare(data.roads)
 	town.reference = trento
 	town.register_roads(data.roads)
 	var route: Array = data.route
@@ -123,6 +129,9 @@ func _ready() -> void:
 	street_signs(signs, bounds)
 	decorate(bounds)
 	trento.add_boundaries(self, bounds)
+	trento.add_pasubio(self, bounds)
+	underpass.add(self, bounds)
+	trieste.add(self, bounds)
 	scatter_greenery(bounds)
 	var decorations := Node3D.new()
 	decorations.name = "ArrediCittadini"
@@ -236,7 +245,7 @@ func build_roads(bounds: AABB) -> Array:
 		var rendered := false
 		var carriageway: bool = road.get("carriageway", road.drivable)
 		var width: float = road.width if carriageway else 3.0
-		var photo_street: bool = road.name == "Via Trento" and road.get("highway", "") == "tertiary"
+		var photo_street: bool = (road.name == "Via Trento" and road.get("highway", "") == "tertiary") or road.name == "Via Pasubio" or int(road.id) == 125508945 or road.name == "Via Trieste"
 		var road_surface: SurfaceTool = trento_asphalt if photo_street else asphalt
 		# Le due finiture si sovrappongono agli incroci: evitare superfici complanari.
 		var road_y: float = ROAD_Y + 0.002 if photo_street else ROAD_Y
@@ -261,7 +270,7 @@ func build_roads(bounds: AABB) -> Array:
 			if not carriageway:
 				ribbon(footpath, a, b, width / 2.0, SIDEWALK_Y + 0.004)
 				continue
-			sidewalks(trento_walk if photo_street else walk, a, b, width, road.get("sidewalk", "both"), float(trento.catalog.sidewalk_width_estimate) if photo_street else 1.0)
+			sidewalks(trento_walk if photo_street else walk, a, b, width, road.get("sidewalk", "both"), (1.6 if road.name == "Via Trieste" else float(trento.catalog.sidewalk_width_estimate)) if photo_street else 1.0)
 			ribbon(road_surface, a, b, width / 2.0, road_y)
 			var kerb_clear_a: float = width / 2.0 + 2.0 if usage.get(junction_key(road.points[i]), 0) >= 3 else 0.0
 			var kerb_clear_b: float = width / 2.0 + 2.0 if usage.get(junction_key(road.points[i + 1]), 0) >= 3 else 0.0
@@ -410,8 +419,8 @@ func add_roof(builder: SurfaceTool, outline: PackedVector2Array, h: float, build
 	var id := int(building.id)
 	var tones := [Color("89624e"), Color("986c53"), Color("a07760"), Color("806458"), Color("95705e")]
 	var roof_color: Color = tones[posmod(id, tones.size())]
-	if building.get("roof_shape", "") == "flat" or building.get("kind", "") in ["industrial", "warehouse"]:
-		builder.set_color(Color("9b9a90"))
+	if building.get("roof_shape", "") == "flat" or building.get("kind", "") in ["industrial", "warehouse"] or id == 215468999:
+		builder.set_color(Color("c9cdcc") if id == 215468999 else Color("9b9a90"))
 		var indices := Geometry2D.triangulate_polygon(outline)
 		for i in range(0, indices.size(), 3):
 			var a := outline[indices[i]]

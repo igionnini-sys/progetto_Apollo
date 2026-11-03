@@ -10,6 +10,18 @@ Il modello locale sostituisce il volume generico selezionato e riserva lo spazio
 
 Verifiche: sette controlli dedicati a raccordo, senso unico, collisioni delle ante, apertura, uscita e reset; percorso di esplorazione completo, storia e città con configurazione locale. Catture reali in `build/verifica/casa-apollo-*.png`, riproducibili con `tests/home_capture.gd -- --with-home`.
 
+## Via Trieste e scuola — foto del 3 novembre 2026
+
+Dieci schermate Street View (giugno 2026) mostrano Via Trieste dal suo inizio con "SP3" sull'asfalto fino all'angolo con Via Fiume e al parcheggio della scuola. Modellati: carreggiata a due corsie con mezzeria tratteggiata, marciapiedi rosati, recinzioni e cancelli diversi, siepi, lampioni a braccio, attraversamenti con fasce arancioni e cartelli blu, guard-rail sul fosso, rete alta del capannone, piazzale della scuola con auto di traverso e transenne. Le facciate sono interpretazioni per tono e altezza, non associate edificio per edificio. I capannoni a volta in mattoni rossi non sono modellati; l'ultimo tratto (Via Trieste, da Via Fiume alla scuola) segue la geometria OSM. Nessuna foto è usata come texture.
+
+## Sottopasso di Via Novara — foto del 3 novembre 2026
+
+Dodici schermate Street View (marzo e giugno 2026) mostrano l'imbocco da Via Pasubio, la rotatoria con Via Tolmino e il sottopasso: trincea di cemento con muri alti e rampe curve, balaustra metallica sul lato pedonale, scarpata e steccato della ferrovia sull'altro, ponte con limite di altezza 3,60 m e semaforo, mezzeria bianca con croci. Il mondo è piatto: la trincea è resa con muri solidi, non con un terreno scavato. La posizione del ponte (339, 256) e la sua direzione sono stimate dalla vista aerea; il parcheggio all'imbocco è un'interpretazione delle foto. L'isola della rotatoria e le palazzine sullo sfondo non sono modellate. Nessuna foto è usata come texture.
+
+## Via Pasubio — foto del 3 novembre 2026
+
+Sei schermate Street View (novembre 2020 e giugno 2026) mostrano Via Pasubio come via stretta a senso unico verso Via Novara, senza marciapiedi. Larghezza stimata 4,6 m. Modellati: fabbricati a fasce di mattoni su intonaco chiaro, palazzina gialla con inferriate verdi, case salmone e una casa azzurra verso il fondo; recinzioni bianche su muretto, cancelli di ferro con pilastri, siepi d'edera, reti verdi, dissuasori giallo-neri, lampioni sottili, scritte a terra e segnale di divieto di fermata. Le associazioni foto/edificio dedotte dall'ordine lungo la via sono provvisorie. Nessuna foto è usata come texture; arredi senza collisioni.
+
 ## Seconda revisione del 24 ottobre 2026 — foto di Via Trento
 
 L'utente ha fornito otto schermate di Google Street View, con sei viste distinte: due all'altezza indicata come 38 Via Trento (luglio 2025), due presso 17 Via Trento (novembre 2020), una presso 9 Via Trento (novembre 2020) e una presso 14 Via Trento ripetuta tre volte (luglio 2025). Ora queste immagini sono state osservate direttamente nella conversazione; il precedente limite di accesso al browser non impedisce di usarle come riferimento visivo.

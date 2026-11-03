@@ -6,10 +6,21 @@ const G = preload("res://scripts/utilities/geometry.gd")
 const Meshes = preload("res://scripts/utilities/meshes.gd")
 var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/map/trento_reference.json"))
 var segments: Array = []
-var stats := {"fence_spans": 0, "bridge_rails": 0, "photo_facades": 0, "lamps": 0, "parked_cars": 0, "signs": 0}
+var pasubio_segments: Array = []
+var trieste_segments: Array = []
+var stats := {"fence_spans": 0, "bridge_rails": 0, "photo_facades": 0, "lamps": 0, "parked_cars": 0, "signs": 0, "pasubio_spans": 0, "pasubio_bollards": 0}
 
 func prepare(roads: Array) -> void:
 	for road: Dictionary in roads:
+		if road.name == "Via Trieste":
+			for i in range(road.points.size() - 1):
+				trieste_segments.append([Vector2(road.points[i][0], road.points[i][1]), Vector2(road.points[i + 1][0], road.points[i + 1][1])])
+		if road.name == "Via Pasubio":
+			# Via stretta a senso unico, senza marciapiedi: muri e recinzioni a bordo asfalto.
+			road.width = float(catalog.pasubio.road_width_estimate)
+			road.sidewalk = "no"
+			for i in range(road.points.size() - 1):
+				pasubio_segments.append([Vector2(road.points[i][0], road.points[i][1]), Vector2(road.points[i + 1][0], road.points[i + 1][1])])
 		if road.name != "Via Trento" or road.get("highway", "") != "tertiary":
 			continue
 		road.width = float(catalog.road_width_estimate)
@@ -22,13 +33,38 @@ func distance_to_street(pos: Vector2) -> float:
 		nearest = minf(nearest, Geometry2D.get_closest_point_to_segment(pos, segment[0], segment[1]).distance_to(pos))
 	return nearest
 
+func distance_to_pasubio(pos: Vector2) -> float:
+	var nearest := INF
+	for segment: Array in pasubio_segments:
+		nearest = minf(nearest, Geometry2D.get_closest_point_to_segment(pos, segment[0], segment[1]).distance_to(pos))
+	return nearest
+
+func distance_to_trieste(pos: Vector2) -> float:
+	var nearest := INF
+	for segment: Array in trieste_segments:
+		nearest = minf(nearest, Geometry2D.get_closest_point_to_segment(pos, segment[0], segment[1]).distance_to(pos))
+	return nearest
+
+func footprint_area(outline: Array) -> float:
+	var total := 0.0
+	for i in outline.size():
+		var a: Array = outline[i]
+		var b: Array = outline[(i + 1) % outline.size()]
+		total += float(a[0]) * float(b[1]) - float(b[0]) * float(a[1])
+	return absf(total) * 0.5
+
 func profile(building: Dictionary, center: Vector2) -> Dictionary:
 	var key := str(int(building.id))
 	if catalog.profiles.has(key):
 		return catalog.profiles[key]
-	if distance_to_street(center) > 24.0 or building.get("kind", "") in ["garage", "garages", "shed", "industrial", "warehouse"]:
+	if minf(minf(distance_to_street(center), distance_to_pasubio(center)), distance_to_trieste(center)) > 24.0 or building.get("kind", "") in ["garage", "garages", "shed", "industrial", "warehouse"]:
 		return {}
 	# Grammatica delle foto per il resto del corridoio, senza fingere un rilievo.
+	if distance_to_trieste(center) <= 24.0 and distance_to_street(center) > 24.0 and distance_to_pasubio(center) > 24.0:
+		# Via Trieste: case arancio, verdi e gialle e palazzine grigie a tre piani con tende.
+		var trieste_tones := ["e0a37f", "c4cfa0", "e6d49a", "d9d4c4", "d98f78", "ecdcc2"]
+		var big: bool = footprint_area(building.outline) > 260.0
+		return {"style": "apartment" if big else "house", "height": 9.6 if big else 6.6, "color": trieste_tones[posmod(int(building.id), trieste_tones.size())], "accent": "b8553e", "window": "shutter", "balcony": "individual", "base_height": 0.9}
 	var tones := ["e3d6ba", "d8c7b2", "e9e5d9", "d3b4a0"]
 	return {"style": "house", "color": tones[posmod(int(building.id), tones.size())], "accent": "b9b7ab", "window": "shutter", "balcony": "individual", "base_height": 0.8}
 
@@ -82,6 +118,10 @@ func facade(town: RefCounted, outline: PackedVector2Array, h: float, style: Dict
 		town.cylinder(downpipe, 0.09, h, Color("7e7b70"), "metal")
 		if street:
 			town.stats.detailed_facades += 1
+		if style.get("bands", false):
+			# Fasce di mattoni rossi su intonaco chiaro, come nei fabbricati di Via Pasubio.
+			for course in floori((h - base) / 0.78):
+				town.box(middle + Vector3.UP * (base + 0.45 + course * 0.78) + normal * 0.09, Vector3(length, 0.14, 0.1), accent, yaw, "stone")
 		var levels := maxi(1, roundi(h / 3.0))
 		var columns := maxi(1, floori(length / 3.2))
 		var spacing := length / columns
@@ -111,6 +151,7 @@ func facade(town: RefCounted, outline: PackedVector2Array, h: float, style: Dict
 					town.portal(pos - Vector3.UP * y, tangent, normal, yaw, serial)
 					continue
 				var wh := 2.0 if continuous else 1.45
+				var barred: bool = style.window == "barred"
 				var frame := Color("d8d5c9") if roller else Color("b5ad9a")
 				town.box(pos, Vector3(1.35, wh + 0.16, 0.11), frame, yaw)
 				town.box(pos + normal * 0.06, Vector3(1.12, wh, 0.08), Color("48555b"), yaw, "window")
@@ -118,12 +159,12 @@ func facade(town: RefCounted, outline: PackedVector2Array, h: float, style: Dict
 				if roller:
 					var closure: float = [0.15, 0.55, 0.95, 0.3][posmod(serial, 4)]
 					town.box(pos + normal * 0.15 + Vector3.UP * wh * (1.0 - closure) * 0.5, Vector3(1.12, wh * closure, 0.045), Color("d8d7ce"), yaw, "roller")
-				else:
+				elif not barred:
 					for side in [-1.0, 1.0]:
 						town.box(pos + tangent * side * 0.83 + normal * 0.10, Vector3(0.43, wh, 0.09), Color("665f50"), yaw, "shutter")
-				if level == 0:
+				if level == 0 or barred:
 					for bar in 5:
-						town.box(pos + tangent * (bar - 2) * 0.2 + normal * 0.19, Vector3(0.025, wh, 0.025), Color("4f5049"), yaw, "metal")
+						town.box(pos + tangent * (bar - 2) * 0.2 + normal * 0.19, Vector3(0.025, wh, 0.025), Color("3f8a4d") if barred else Color("4f5049"), yaw, "metal")
 				if level > 0 and style.balcony == "individual" and col == columns / 2 and street:
 					balcony(town, pos - Vector3.UP * (wh * 0.5 + 0.1), tangent, normal, 2.4, yaw, true)
 					# Tenda chiara domestica, una per fronte; non una vetrina commerciale.
@@ -283,3 +324,119 @@ func add_signs(world: Node3D, pos: Vector3) -> void:
 		var x := (i - 3) * 0.06
 		world.town.box(pos + Vector3(x, 3.06 + 0.08 * cos(x * 7.0), 0.055), Vector3(0.065, 0.045, 0.015), Color("30362f"))
 	stats.signs = 2
+
+## Via Pasubio: recinzioni bianche su muretto, cancelli, siepi d'edera, dissuasori giallo-neri e lampioni.
+func picket(town: RefCounted, a: Vector3, b: Vector3, base: float, color: Color) -> void:
+	var tangent := (b - a).normalized()
+	var yaw := atan2(-tangent.z, tangent.x)
+	var length := a.distance_to(b)
+	var middle := (a + b) * 0.5
+	town.box(middle + Vector3.UP * base * 0.5, Vector3(length, base, 0.26), Color("b9b6aa"), yaw, "stone")
+	for y in [base + 0.12, base + 0.95]:
+		town.box(middle + Vector3.UP * y, Vector3(length, 0.07, 0.05), color, yaw, "metal")
+	var bars := ceili(length / 0.2)
+	for i in bars:
+		town.box(a.lerp(b, (i + 0.5) / bars) + Vector3.UP * (base + 0.55), Vector3(0.05, 1.0, 0.03), color, yaw, "metal")
+	for p in [a, b]:
+		town.box(p + Vector3.UP * (base + 0.55), Vector3(0.14, 1.3, 0.14), color, yaw, "stone")
+
+func pasubio_gate(town: RefCounted, a: Vector3, b: Vector3, inward: Vector3) -> void:
+	var tangent := (b - a).normalized()
+	var yaw := atan2(-tangent.z, tangent.x)
+	var iron := Color("3a3d42")
+	var middle := (a + b) * 0.5
+	var length := a.distance_to(b)
+	for p in [a, b]:
+		town.box(p + Vector3.UP * 0.95, Vector3(0.5, 1.9, 0.5), Color("9a9487"), yaw, "stone")
+		town.box(p + Vector3.UP * 2.0, Vector3(0.62, 0.12, 0.62), Color("d8d2c4"), yaw)
+		town.sphere(p + Vector3.UP * 2.25, Vector3(0.3, 0.34, 0.3), Color("ddd8cc"))
+	town.box(middle + Vector3.UP * 0.25, Vector3(length - 0.5, 0.5, 0.06), iron, yaw, "metal")
+	for y in [0.55, 1.45]:
+		town.box(middle + Vector3.UP * y, Vector3(length - 0.5, 0.05, 0.05), iron, yaw, "metal")
+	var bars := ceili(length / 0.14)
+	for i in bars:
+		town.box(a.lerp(b, (i + 0.5) / bars) + Vector3.UP * 1.0, Vector3(0.025, 1.0, 0.025), iron, yaw, "metal")
+	town.box(middle + inward * 1.5 + Vector3.DOWN * 0.07, Vector3(length, 0.02, 2.4), Color("b5836c"), yaw, "trento_paving")
+
+func hedge(town: RefCounted, a: Vector3, b: Vector3, height: float, variegated: bool, base: float) -> void:
+	var tangent := (b - a).normalized()
+	var yaw := atan2(-tangent.z, tangent.x)
+	var length := a.distance_to(b)
+	if base > 0.0:
+		town.box((a + b) * 0.5 + Vector3.UP * base * 0.5, Vector3(length, base, 0.3), Color("a8a496"), yaw, "stone")
+	var blobs := ceili(length / 1.1)
+	for i in blobs:
+		var p := a.lerp(b, (i + 0.5) / blobs)
+		var tone := Color("78925a") if variegated and i % 2 == 0 else Color("476c3d")
+		town.batch.add("blob", p + Vector3.UP * (base + height * 0.5), Vector3(1.3, height, 0.95), tone, yaw + i, "foliage")
+
+func bollard(town: RefCounted, pos: Vector3) -> void:
+	town.cylinder(pos + Vector3.UP * 0.5, 0.11, 1.0, Color("2a2a2c"), "metal")
+	town.cylinder(pos + Vector3.UP * 0.78, 0.115, 0.14, Color("e3b92f"), "metal")
+
+func add_pasubio(world: Node3D, bounds: AABB) -> void:
+	var town: RefCounted = world.town
+	var half: float = float(catalog.pasubio.road_width_estimate) * 0.5
+	var serial := 0
+	for segment: Array in pasubio_segments:
+		var a := Vector3(segment[0].x, 0, segment[0].y)
+		var b := Vector3(segment[1].x, 0, segment[1].y)
+		var length := a.distance_to(b)
+		var tangent := (b - a).normalized()
+		var side := Vector3(tangent.z, 0, -tangent.x)  # verso nord; sud con -side
+		var yaw := atan2(-tangent.z, tangent.x)
+		var step := 6.0
+		var count := floori((length - 16.0) / step)
+		for i in count:
+			serial += 1
+			var t0 := 8.0 + i * step
+			for sign_side in [1.0, -1.0]:
+				var offset: Vector3 = side * sign_side * (half + 0.3)
+				var start: Vector3 = a + tangent * t0 + offset
+				var finish: Vector3 = a + tangent * (t0 + step - 0.2) + offset
+				var clear := bounds.has_point(start) and bounds.has_point(finish)
+				for fraction in [0.0, 0.5, 1.0]:
+					clear = clear and town.clear_position(start.lerp(finish, fraction), 0.3)
+				if not clear:
+					continue
+				var pick := posmod(serial * 7 + int(sign_side) * 3, 8)
+				if sign_side > 0.0:
+					# Lato nord: recinzioni bianche su muretto, cancelli di ferro e siepi.
+					if pick == 0:
+						pasubio_gate(town, start, finish, side)
+					elif pick == 3 or pick == 6:
+						hedge(town, start, finish, 1.9, false, 0.55)
+					else:
+						picket(town, start, finish, 0.5, Color("e7e5dd"))
+						if pick == 4:
+							hedge(town, start + side * 0.6, finish + side * 0.6, 1.6, false, 0.0)
+				else:
+					# Lato sud: muretti coperti d'edera, reti verdi e dissuasori giallo-neri.
+					if pick == 1 or pick == 5:
+						town.box((start + finish) * 0.5 + Vector3.UP * 0.85, Vector3(start.distance_to(finish), 1.7, 0.04), Color("2f4a3a"), yaw)
+					else:
+						hedge(town, start, finish, 0.9, true, 0.8)
+					for k in 2:
+						bollard(town, start.lerp(finish, 0.25 + k * 0.5) + side * 0.12)
+						stats.pasubio_bollards += 1
+				stats.pasubio_spans += 1
+		# Lampioni sottili sul lato nord, come nelle foto.
+		for t in [22.0, 70.0, 118.0, 166.0]:
+			var p: Vector3 = a + tangent * t + side * (half + 0.9)
+			if not bounds.has_point(p) or not town.clear_position(p, 0.15):
+				continue
+			town.cylinder(p + Vector3.UP * 2.8, 0.1, 5.6, Color("8c918c"), "metal")
+			town.box(p + Vector3(0, 5.6, 0) - side * 0.45, Vector3(0.9, 0.06, 0.06), Color("8c918c"), yaw + PI * 0.5, "metal")
+			town.sphere(p + Vector3(0, 5.55, 0) - side * 0.9, Vector3(0.36, 0.1, 0.2), Color("707670"), "metal")
+		# Scritta a terra e cartello di divieto di fermata all'imbocco.
+		for t in [24.0, 104.0, 176.0]:
+			var label := G.label(world, "Via Pasubio", a + tangent * t + Vector3.UP * 0.02, 64)
+			label.rotation = Vector3(-PI * 0.5, -yaw - PI * 0.5, 0)
+			label.pixel_size = 0.012
+			label.modulate = Color("e9e7de")
+			label.outline_size = 0
+		var pole: Vector3 = a + tangent * 6.0 - side * (half + 0.4)
+		if town.clear_position(pole, 0.1):
+			town.cylinder(pole + Vector3.UP * 1.3, 0.07, 2.6, Color("858a82"), "metal")
+			town.sphere(pole + Vector3(0, 2.5, 0), Vector3(0.6, 0.6, 0.05), Color("2c62a6"))
+			town.box(pole + Vector3(0, 2.5, 0.03), Vector3(0.5, 0.07, 0.03), Color("c8372d"))

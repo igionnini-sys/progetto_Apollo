@@ -5,6 +5,7 @@ const Materials = preload("res://scripts/utilities/materials.gd")
 const Batch = preload("res://scripts/environment/town_batch.gd")
 var batch = Batch.new()
 var reference: RefCounted
+var school_model: RefCounted = preload("res://scripts/environment/school_building.gd").new()
 var road_segments: Array = []
 var road_index: Dictionary = {}
 var detail_route: Array[Vector2] = []
@@ -42,7 +43,7 @@ func height(building: Dictionary) -> float:
 	if int(building.id) == 897476177:
 		return 9.0
 	if int(building.id) == 215468999:
-		return 5.4
+		return 4.0
 	if building.get("kind", "") in ["garage", "garages", "shed"]:
 		return 2.7
 	if building.get("kind", "") in ["industrial", "warehouse"]:
@@ -56,6 +57,8 @@ func wall_color(building: Dictionary) -> Color:
 		if not profile.is_empty():
 			return Color(profile.color)
 	var id := int(building.id)
+	if id == 215468999:
+		return Color("b4543b")
 	if building.get("kind", "") in ["garage", "garages", "shed"]:
 		return Color("cdbfa6")
 	if building.get("kind", "") in ["industrial", "warehouse"]:
@@ -210,6 +213,9 @@ func facade(outline: PackedVector2Array, building: Dictionary, h: float) -> void
 	# di dettagli lontani allargando la mappa fino al fondo di Via Trento.
 	var detailed_area := near_route(Vector3(center.x, 0, center.y))
 	if not detailed_area and not landmark and not school:
+		return
+	if school:
+		school_model.facade(self, outline, h)
 		return
 	if reference != null and not landmark and not school:
 		var profile: Dictionary = reference.profile(building, center)
