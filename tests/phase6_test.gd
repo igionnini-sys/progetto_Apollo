@@ -92,7 +92,7 @@ func run() -> void:
 	main.hud.show_settings()
 	(main.hud.content.get_child(3).get_child(1) as HSlider).value = 0.5
 	check(main.save_store.settings.music == 0.5 and main.audio.music.volume_db > -80, "Slider modifica realmente il volume")
-	(main.hud.content.get_child(10) as Button).pressed.emit()
+	(main.hud.content.get_child(11) as Button).pressed.emit()
 	check(main.hud.content.get_child(1).text.contains("APOLLO"), "Salva e torna riapre il menu")
 	main.show_garage(1)
 	check(main.garage_camera.current and main.garage_display.global_position.y == 5000 and paused, "Vetrina isolata dal traffico e dal mondo di gioco")

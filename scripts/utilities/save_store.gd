@@ -1,11 +1,12 @@
 extends RefCounted
 ## Un solo documento locale, senza coordinate o dati personali.
-const DEFAULTS = {"music": 0.35, "effects": 0.65, "gentle": false, "reduced_motion": false, "shadows": true, "hq_graphics": true, "camera": 4.0}
+const DEFAULTS = {"music": 0.35, "effects": 0.65, "gentle": false, "reduced_motion": false, "shadows": true, "hq_graphics": true, "camera": 4.0, "race_assist": 0.5}
 var path: String = "user://apollo_save.json"
 var memory_only: bool = false
 var settings: Dictionary = DEFAULTS.duplicate()
 var parks: Array = []
 var stories: Array = []
+var achievements: Array = []
 var journey_stars: Dictionary = {"school": 0, "parking": 0}
 var recovered: bool = false
 var last_error: String = ""
@@ -39,6 +40,7 @@ func restore() -> void:
 	settings = DEFAULTS.duplicate()
 	parks = []
 	stories = []
+	achievements = []
 	journey_stars = {"school": 0, "parking": 0}
 	recovered = false
 	var data := read_document(path)
@@ -60,6 +62,7 @@ func apply_document(data: Dictionary) -> void:
 	stories = validated_ids(data.get("stories", []), ["school", "parking"])
 	if "parking" in stories and not "school" in stories:
 		stories.erase("parking")
+	achievements = validated_ids(data.get("achievements", []), ["wallet", "all_money"])
 	var star_data: Variant = data.get("journey_stars", {})
 	if star_data is Dictionary:
 		for id in journey_stars:
@@ -87,7 +90,7 @@ func save(tree: SceneTree = null) -> bool:
 	if file == null:
 		last_error = "Impossibile scrivere il salvataggio. I premi restano disponibili nella partita."
 		return false
-	file.store_string(JSON.stringify({"version": 1, "settings": settings, "parks": parks, "stories": stories, "journey_stars": journey_stars}, "\t"))
+	file.store_string(JSON.stringify({"version": 1, "settings": settings, "parks": parks, "stories": stories, "achievements": achievements, "journey_stars": journey_stars}, "\t"))
 	file.flush()
 	var status := file.get_error()
 	file.close()

@@ -90,6 +90,15 @@ func horn() -> void:
 func chime() -> void:
 	tone(660.0, 0.24)
 
+func coin() -> void:
+	tone(990.0, 0.09)
+
+func boost() -> void:
+	tone(880.0, 0.2)
+
+func smash() -> void:
+	tone(150.0, 0.18)
+
 func click() -> void:
 	tone(480.0, 0.06)
 
@@ -101,7 +110,7 @@ func _process(delta: float) -> void:
 	var driving: bool = is_instance_valid(vehicle) and vehicle.enabled and not get_tree().paused
 	var speed := absf(vehicle.speed) if driving else 0.0
 	engine.volume_db = move_toward(engine.volume_db, level_db(effects_level, -27.0 + speed * 0.25) if driving else -80.0, delta * 100.0)
-	engine.pitch_scale = lerpf(engine.pitch_scale, 1.0 + speed / 22.0, 1.0 - exp(-4.0 * delta))
+	engine.pitch_scale = lerpf(engine.pitch_scale, 1.0 + speed / 22.0 + (0.3 if driving and vehicle.effects.is_boosting() else 0.0), 1.0 - exp(-4.0 * delta))
 	ambience.volume_db = level_db(effects_level, -30) if driving else -80.0
 	var brake_pressed: bool = driving and Input.is_action_pressed("brake")
 	if brake_pressed and not brake_was_pressed and speed > 0.5:

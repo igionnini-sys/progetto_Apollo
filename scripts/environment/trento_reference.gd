@@ -27,6 +27,34 @@ func prepare(roads: Array) -> void:
 		for i in range(road.points.size() - 1):
 			segments.append([Vector2(road.points[i][0], road.points[i][1]), Vector2(road.points[i + 1][0], road.points[i + 1][1])])
 
+## Le impronte OSM di alcune case di Via Pasubio sfiorano o coprono la carreggiata stretta:
+## i vertici troppo vicini all'asse vengono spinti indietro, mantenendo la forma dell'edificio.
+func clear_pasubio_buildings(buildings: Array, margin: float = 1.3) -> int:
+	var minimum: float = float(catalog.pasubio.road_width_estimate) * 0.5 + margin
+	var moved := 0
+	for building: Dictionary in buildings:
+		var changed := false
+		for xy: Array in building.outline:
+			var p := Vector2(xy[0], xy[1])
+			var best := Vector2.ZERO
+			var nearest := INF
+			for segment: Array in pasubio_segments:
+				var q := Geometry2D.get_closest_point_to_segment(p, segment[0], segment[1])
+				if p.distance_to(q) < nearest:
+					nearest = p.distance_to(q)
+					best = q
+			if nearest < minimum:
+				var away := (p - best).normalized()
+				if nearest < 0.01:
+					var seg: Array = pasubio_segments[0]
+					away = Vector2((seg[1] - seg[0]).y, -(seg[1] - seg[0]).x).normalized()
+				p = best + away * minimum
+				xy[0] = p.x
+				xy[1] = p.y
+				changed = true
+		moved += 1 if changed else 0
+	return moved
+
 func distance_to_street(pos: Vector2) -> float:
 	var nearest := INF
 	for segment: Array in segments:

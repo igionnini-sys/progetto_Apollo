@@ -1,4 +1,26 @@
 {
-  "grandfather": {"name":"Nonno","skin":"efd0ad","hair":"d7d9d1","shirt":"688c9d"},
-  "granddaughter": {"name":"Nipotina","skin":"efd0ad","hair":"795b48","shirt":"d58f9f"}
+  "grandfather": {
+    "name": "Nonno",
+    "skin": "efd0ad",
+    "hair": "d7d9d1",
+    "shirt": "688c9d"
+  },
+  "granddaughter": {
+    "name": "Nipotina",
+    "skin": "efd0ad",
+    "hair": "795b48",
+    "shirt": "d58f9f"
+  },
+  "grandmother": {
+    "name": "Nonna",
+    "skin": "efd0ad",
+    "hair": "d7d9d1",
+    "shirt": "b57aa8"
+  },
+  "cats": {
+    "name": "le gatte",
+    "skin": "efd0ad",
+    "hair": "795b48",
+    "shirt": "6aa86a"
+  }
 }

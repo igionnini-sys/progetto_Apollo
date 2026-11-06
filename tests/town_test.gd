@@ -24,7 +24,7 @@ func run() -> void:
 	check(stats.landmarks == 3, "Municipio, chiesa e plesso scolastico nelle impronte reali")
 	check(stats.trees > 0 and stats.lamps > 0 and stats.benches > 0, "Verde e arredi cittadini presenti")
 	check(stats.crossings > 0, "Attraversamenti derivati dai punti OSM")
-	check(stats.signals == 2 and stats.cars > 0 and stats.street_signs > 0, "Semafori mappati, auto ferme e targhe stradali")
+	check(stats.signals == 2 and stats.cars == 0 and stats.street_signs > 0, "Semafori mappati, nessuna auto parcheggiata e targhe stradali")
 	check(stats.batches < 80 and stats.instances > stats.batches * 10, "Dettagli ripetuti raggruppati con MultiMesh")
 	check(not world.town.clear_position(main.vehicle.position, 1.0), "Esclusione decorazioni dalla carreggiata")
 	# L'indice spaziale deve conservare i risultati della ricerca completa, anche ai bordi delle celle.
@@ -53,10 +53,7 @@ func run() -> void:
 	check(world.get_node("ChiesaSantiPietroPaolo").position.distance_to(world.geo(45.201633, 7.775481)) < 0.01, "Chiesa conserva coordinate geografiche")
 	check(world.get_node("PlessoViaTrieste").position.distance_to(world.geo(45.1993144, 7.781281)) < 0.01, "Plesso sul punto mappa della scuola, senza attivare accesso carrabile")
 	await physics_frame
-	var parked: Vector3 = world.town.parked_colliders[0][0]
-	var ray := PhysicsRayQueryParameters3D.create(parked + Vector3.UP * 3, parked + Vector3.UP * 1.2)
-	var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(ray)
-	check(not hit.is_empty() and float(hit.position.y) > 1.3, "Le auto ferme sono rilevate dalle collisioni fisiche")
+	check(world.town.parked_colliders.is_empty(), "Nessun collider di auto parcheggiate")
 	if DisplayServer.get_name() != "headless":
 		DirAccess.make_dir_recursive_absolute("res://build/verifica")
 		await create_timer(1.0).timeout

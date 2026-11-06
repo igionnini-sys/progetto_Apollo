@@ -4,6 +4,7 @@ signal exploration_requested
 signal park_requested(id: String)
 signal search_requested(index: int)
 signal story_requested(id: String)
+signal race_requested(id: String)
 signal dialogue_requested
 signal resume_requested
 signal restart_requested
@@ -18,6 +19,9 @@ var dialogue_label: Label
 var overlay: ColorRect
 var card: PanelContainer
 var content: VBoxContainer
+var speed_lines: Control
+var splash_overlay: Control
+var status_label: Label
 var elapsed: float = 0.0
 var base: Control
 var bold: FontVariation
@@ -40,6 +44,12 @@ func _ready() -> void:
 	vignette_material.shader = load("res://assets/shaders/vignette.gdshader")
 	vignette.material = vignette_material
 	base.add_child(vignette)
+	speed_lines = Control.new()
+	speed_lines.set_script(load("res://scripts/ui/speed_lines.gd"))
+	base.add_child(speed_lines)
+	splash_overlay = Control.new()
+	splash_overlay.set_script(load("res://scripts/ui/splash_overlay.gd"))
+	base.add_child(splash_overlay)
 	var top := panel(base, Vector2(48, 38), Vector2(640, 150))
 	var title := label(top, "APOLLO  /  VOLPIANO" if mission.route_mode else "APOLLO  /  IL PRIMO GIRO", 22, Color("eccb82"))
 	title.tooltip_text = "Esplorazione geografica" if mission.route_mode else "Circuito di prova della Fase 1"
@@ -49,7 +59,7 @@ func _ready() -> void:
 	var meter := panel(base, Vector2(1600, 38), Vector2(270, 150))
 	speed_label = label(meter, "0 km/h", 50)
 	speed_label.add_theme_font_override("font", bold)
-	label(meter, "ANDIAMO CON CALMA", 17, Color("eccb82"))
+	status_label = label(meter, "ANDIAMO CON CALMA", 17, Color("eccb82"))
 	var bottom := panel(base, Vector2(48, 878), Vector2(1320, 152))
 	dialogue_label = label(bottom, "Nonno: «Allacciamo le cinture e via!»", 28, Color("eccb82"))
 	dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -256,32 +266,24 @@ func clear_card(title: String, subtitle: String) -> void:
 	description.custom_minimum_size.x = 790
 
 func show_menu() -> void:
-	var description := "Pronta per una nuova avventura?\nFacciamo pratica: quattro archi e un parcheggio."
-	if mission.route_mode:
-		description = "Volpiano cartoon · Via Trento → Via Brandizzo\nSegui i punti dorati fra case, alberi e attraversamenti.\nPercorso esplorativo: accesso scolastico da verificare."
-	if mission.park_mode:
-		description = "Gita al parco " + str(mission.park_name) + ".\nRaggiungi il cerchio e ferma Apollo.\nPoi osserva i giochi e cerca la stella!"
-	if mission.story_mode:
-		description = "Il Parcheggio Perfetto · tre soste con calma." if get_parent().selected_story == "parking" else "Missione Scuola · versione racconto\nUn viaggio con nonno e nipotina, tre stelle e un semaforo.\nSosta su Via Brandizzo; ultima parte raccontata a piedi."
-	clear_card("APOLLO · Missione Scuola", description)
-	(content.get_child(1) as Label).add_theme_font_size_override("font_size", 44)
-	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 16)
-	grid.add_theme_constant_override("v_separation", 16)
-	content.add_child(grid)
-	button("Si parte!", func(): play_requested.emit(), grid)
-	button("Circuito di prova" if mission.route_mode else "Esplora Volpiano", func(): exploration_requested.emit(), grid)
-	button("Le gite nei parchi", show_parks, grid)
-	button("Storia e missioni", show_stories, grid)
-	button("Apollo da vicino", func(): get_parent().show_garage(), grid)
-	button("Impostazioni", func(): show_settings(false), grid)
-	button("Collezione", show_collection, grid)
-	button("Esci", func(): quit_requested.emit(), grid)
-	for child: Control in grid.get_children():
-		child.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.get_child(0).grab_focus()
-	var store: RefCounted = get_parent().save_store
+	var main: Node = get_parent()
+	var resumable: bool = main.resume_ok
+	clear_card("APOLLO", "Un viaggio con nonno e nipotina, tre stelle e un semaforo.\nPronta per una nuova avventura?")
+	(content.get_child(1) as Label).add_theme_font_size_override("font_size", 56)
+	if resumable:
+		button("Riprendi", func(): resume_requested.emit())
+	button("Ricomincia" if resumable else "Avvia gioco", func():
+		if main.selected_story == "school":
+			play_requested.emit()
+		else:
+			story_requested.emit("school")
+	)
+	button("Sfida con Gino", func(): race_requested.emit("level2_race"))
+	button("Impostazioni", func(): show_settings(false))
+	button("Esci", func(): quit_requested.emit())
+	if resumable:
+		(content.get_child(3) as Button).grab_focus()
+	var store: RefCounted = main.save_store
 	if store != null and (store.recovered or not store.last_error.is_empty()):
 		label(content, "Recuperata la copia di sicurezza." if store.last_error.is_empty() else store.last_error, 20, Color("eccb82"))
 	label(content, "© OpenStreetMap contributors · ODbL 1.0" if mission.route_mode else "Controller: A accelera · B retro · X frena · Y riposiziona", 20, Color("c1dcdb"))
@@ -309,6 +311,9 @@ func show_collection() -> void:
 	var medals := "MEDAGLIE · " + str(rewards.size()) + " / 2"
 	label(content, medals, 24, Color("eccb82"))
 	label(content, ("★ " if "school" in rewards else "☆ ") + "Compagni di viaggio    " + ("★ " if "parking" in rewards else "☆ ") + "Pilota gentile", 23)
+	var gained: Array = store.achievements
+	label(content, "TRAGUARDI · %d / 2" % gained.size(), 24, Color("eccb82"))
+	label(content, ("★ " if "wallet" in gained else "☆ ") + "Portafoglio salvato    " + ("★ " if "all_money" in gained else "☆ ") + "Nemmeno un centesimo perso", 23)
 	button("Menu principale", show_menu)
 
 func show_story_dialogue() -> void:
@@ -323,6 +328,12 @@ func show_story_completed() -> void:
 	var challenge: bool = get_parent().selected_story == "parking"
 	clear_card("PARCHEGGIO PERFETTO!" if challenge else "MISSIONE COMPIUTA!", "Tre soste morbide, bravo pilota!" if challenge else "Grazie Apollo! Anche oggi siamo arrivati a scuola!")
 	label(content, "Stelle del viaggio: %d / 3" % mission.collected_stars, 30, Color("eccb82"))
+	if not challenge:
+		label(content, "Soldi ritrovati: € %s su %s" % [mission.euro(mission.money_cents), mission.euro(mission.money_total_cents)], 26, Color("ffd27a"))
+		label(content, "Casse sfondate: %d" % mission.smashed_crates, 22, Color("c1dcdb"))
+		var result: String = mission.money_result()
+		label(content, ("★ Portafoglio salvato" if result != "lose" else "☆ Portafoglio da recuperare"), 26, Color("eccb82"))
+		label(content, ("★ Nemmeno un centesimo perso" if result == "win" else "☆ Nemmeno un centesimo perso"), 26, Color("eccb82"))
 	label(content, "★ Pilota gentile" if challenge else "★ Compagni di viaggio", 28, Color("eccb82"))
 	if not challenge:
 		button("Sfida: Il Parcheggio Perfetto", func(): story_requested.emit("parking"))
@@ -332,11 +343,7 @@ func show_story_completed() -> void:
 	show_save_warning()
 
 func show_pause() -> void:
-	clear_card("Una piccola sosta", "Apollo ti aspetta. Ripartiamo quando vuoi!")
-	button("Continua", func(): resume_requested.emit())
-	button("Ricomincia il giro", func(): restart_requested.emit())
-	button("Impostazioni", func(): show_settings(true))
-	button("Menu principale", func(): menu_requested.emit())
+	show_menu()
 
 func show_parks() -> void:
 	var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/map/parks.json"))
@@ -420,6 +427,11 @@ func park_layout() -> void:
 	(content.get_child(1) as Label).add_theme_font_size_override("font_size", 38)
 	fit_side_card.call_deferred()
 
+func show_race_result(player_won: bool) -> void:
+	clear_card("HAI BATTUTO GINO!" if player_won else "GINO HA VINTO!", "Bel sorpasso, pilota! Gino lascia un cesto di frutta sul traguardo." if player_won else "Per un soffio! La rivincita è subito qui.")
+	button("Rivincita!", func(): restart_requested.emit())
+	button("Menu principale", func(): menu_requested.emit())
+
 func show_completed() -> void:
 	clear_card("ESPLORAZIONE COMPLETATA!" if mission.route_mode else "GIRO COMPLETATO!", "Bravo pilota! Apollo è pronto per la prossima avventura.\nHai superato tutte le tappe e parcheggiato con cura.")
 	button("Un altro giro!", func(): restart_requested.emit())
@@ -429,9 +441,20 @@ func _process(delta: float) -> void:
 	if not is_instance_valid(vehicle):
 		return
 	speed_label.text = "%d km/h" % roundi(absf(vehicle.speed) * 3.6)
-	if mission.story_mode:
+	var boosting: bool = vehicle.effects.is_boosting()
+	speed_lines.intensity = 1.0 if boosting else (0.3 if vehicle.effects.draft_time > 0.0 else 0.0)
+	if "rival" in mission:
+		var held: String = mission.items.player_item
+		status_label.text = "TURBO!" if boosting else ("SCIA · RISUCCHIO" if mission.player_drafting else ("E · " + mission.items.NAMES[held] if held != "" else "SFIDA CON GINO"))
+		if vehicle.effects.shield_time > 0.0 and not boosting:
+			status_label.text = "GUANTI ISOLANTI"
+	if "rival" in mission:
+		mission_label.text = "SFIDA CON GINO  ·  %d / %d m" % [mini(roundi(mission.player_distance), roundi(mission.total_length())), roundi(mission.total_length())]
+	elif mission.story_mode:
 		mission_label.text = "TRE SOSTE" if get_parent().selected_story == "parking" else "MISSIONE SCUOLA"
 		mission_label.text += "  ·  ★ %d / 3" % mission.collected_stars
+		if not mission.challenge:
+			mission_label.text += "  ·  € %s / %s" % [mission.euro(mission.money_cents), mission.euro(mission.money_total_cents)]
 	elif mission.park_mode:
 		mission_label.text = "GITA  ·  " + str(mission.park_name)
 	else:
@@ -462,6 +485,18 @@ func show_settings(from_pause: bool = false) -> void:
 			settings[key] = value
 			get_parent().apply_settings()
 		)
+	var assist_button := Button.new()
+	assist_button.custom_minimum_size.y = 48
+	var assist_names := ["Più aiuto", "Normale", "Sfida"]
+	var refresh_assist := func():
+		assist_button.text = "Aiuto in gara con Gino: " + assist_names[roundi(float(settings.race_assist) * 2.0)] + "  (clicca per cambiare)"
+	refresh_assist.call()
+	assist_button.pressed.connect(func():
+		settings.race_assist = float((roundi(float(settings.race_assist) * 2.0) + 1) % 3) / 2.0
+		refresh_assist.call()
+		get_parent().apply_settings()
+	)
+	content.add_child(assist_button)
 	button("Salva e torna", func():
 		if get_parent().persist():
 			if from_pause:

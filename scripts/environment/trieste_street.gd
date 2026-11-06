@@ -103,11 +103,15 @@ func add(world: Node3D, bounds: AABB) -> void:
 					reference.hedge(town, start, finish, 0.7, true, 0.6)
 				stats.fence_spans += 1
 			# Guard-rail lungo il fosso a ovest, nel tratto del sottopasso e dei campi.
-			if c.y > 230.0 and c.y < 440.0 and c.x < 420.0:
+			if c.y > 230.0 and c.y < 380.0 and c.x < 420.0:
 				var rail_side := -1.0 if side.x > 0.0 else 1.0
 				var a: Vector3 = v3(c) + side * rail_side * (half + WALK + 1.7) - t3 * step * 0.5
 				var b: Vector3 = a + t3 * step
-				if bounds.has_point(a) and town.clear_position(a, 0.2):
+				# Tutto il tratto resta fuori da altre strade: niente ringhiera sull'imbocco del sottopasso.
+				var rail_clear := bounds.has_point(a) and bounds.has_point(b)
+				for fraction in [0.0, 0.25, 0.5, 0.75, 1.0]:
+					rail_clear = rail_clear and town.clear_position(a.lerp(b, fraction), 1.2)
+				if rail_clear:
 					reference.rail(town, a, b, 0.0)
 			# Lampioni alti con braccio, alternati sui due lati.
 			if i % 6 == 3:

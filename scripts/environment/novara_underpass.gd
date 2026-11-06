@@ -46,6 +46,22 @@ func along(line: Array[Vector2], s: float) -> Array:
 func v3(p: Vector2, y: float = 0.0) -> Vector3:
 	return Vector3(p.x, y, p.y)
 
+## Vero se la posizione è dentro la trincea (tra le rampe), dove la camera deve restare bassa sotto il ponte.
+func contains(pos: Vector3) -> bool:
+	if path.size() < 2:
+		return false
+	var xy := Vector2(pos.x, pos.z)
+	var s := 0.0
+	var best := INF
+	var best_s := 0.0
+	while s <= length:
+		var d: float = (along(path, s)[0] as Vector2).distance_to(xy)
+		if d < best:
+			best = d
+			best_s = s
+		s += 2.0
+	return best < 6.0 and best_s > 40.0 and best_s < length - 50.0
+
 func wall_height(s: float) -> float:
 	var ramp := minf(s - 30.0, length - 40.0 - s) / RAMP
 	return WALL_HEIGHT * clampf(ramp, 0.0, 1.0)
@@ -56,6 +72,8 @@ func add(world: Node3D, bounds: AABB) -> void:
 	var town: RefCounted = world.town
 	var body := StaticBody3D.new()
 	body.name = "MuriSottopasso"
+	body.collision_layer = 2
+	body.collision_mask = 0
 	world.add_child(body)
 	var step := 4.0
 	var spans := floori(length / step)

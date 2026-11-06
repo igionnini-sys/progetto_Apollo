@@ -19,6 +19,8 @@ var story_id: String = ""
 var story_data: Dictionary = {}
 var story_traffic: Node3D
 var park_id: String = ""
+var race_id: String = ""
+var race_data: Dictionary = {}
 var park_data: Dictionary = {}
 var playground: Node3D
 var town = TownStyle.new()
@@ -54,13 +56,16 @@ func _ready() -> void:
 			has_signal = has_signal or (int(feature.id) == signal_id and feature.kind == "traffic_signals")
 		if not has_signal:
 			data.features.append({"id": signal_id, "kind": "traffic_signals", "point": data.nodes[str(story_data.traffic_node)]})
+	if race_id != "":
+		race_data = JSON.parse_string(FileAccess.get_file_as_string("res://data/levels/%s.json" % race_id))
+		data.route = race_data.route_nodes
 	if park_id != "":
 		var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/map/parks.json"))
 		for park: Dictionary in catalog.parks:
 			if park.id == park_id:
 				park_data = park
 		data.route = park_data.route
-	if park_id == "":
+	if park_id == "" and race_id == "":
 		home_config = HomeDeparture.resolve(data, HomeDeparture.load_settings(get_tree()))
 		if not home_config.is_empty() and HomeDeparture.attach_route(data, home_config):
 			home = HomeDeparture.new()
@@ -71,6 +76,7 @@ func _ready() -> void:
 			town.footprints.append(home.world_outline())
 			town.footprints.append(home.lane_world_outline())
 	trento.prepare(data.roads)
+	trento.clear_pasubio_buildings(data.buildings)
 	underpass.prepare(data.roads)
 	trieste.prepare(data.roads)
 	town.reference = trento
@@ -82,6 +88,9 @@ func _ready() -> void:
 	spawn = checkpoints[0] + Vector3.UP * 0.15
 	var forward := checkpoints[1] - checkpoints[0]
 	heading = atan2(-forward.x, -forward.z)
+	if home != null:
+		# Come nella realtà: Apollo è parcheggiato nel cortile con il muso verso casa e esce in retromarcia.
+		heading += PI
 	checkpoints.remove_at(0)
 	var bounds := AABB(spawn, Vector3.ZERO)
 	for target in checkpoints:

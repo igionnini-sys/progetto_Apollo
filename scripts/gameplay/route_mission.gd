@@ -8,6 +8,8 @@ func instructions() -> String:
 	if finished:
 		return "Bravo pilota! Hai esplorato un pezzetto di Volpiano."
 	var offset := destination() - vehicle.global_position
+	if stage < departure_points:
+		return "↓  Esci dal cancello in retromarcia (S) · %d m" % roundi(offset.length())
 	var angle := angle_difference(vehicle.rotation.y, atan2(-offset.x, -offset.z))
 	var arrow := "↑"
 	if angle > 0.35:

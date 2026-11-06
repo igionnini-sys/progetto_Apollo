@@ -9,6 +9,8 @@ const Apollo = preload("res://scenes/vehicles/apollo.tscn")
 const VolpianoWorld = preload("res://scripts/environment/volpiano_world.gd")
 const RouteMission = preload("res://scripts/gameplay/route_mission.gd")
 const ParkMission = preload("res://scripts/gameplay/park_mission.gd")
+const RaceMission = preload("res://scripts/gameplay/race_mission.gd")
+const GinoModel = preload("res://scripts/vehicles/gino_fiorino.gd")
 const StoryMission = preload("res://scripts/gameplay/story_mission.gd")
 const Dialogue = preload("res://scripts/gameplay/dialogue_player.gd")
 const SaveStore = preload("res://scripts/utilities/save_store.gd")
@@ -21,6 +23,8 @@ var garage_camera: Camera3D
 var garage_active: bool = false
 var garage_display: Node3D
 var selected_story: String = ""
+var selected_race: String = ""
+var gino: Node3D
 var story_state: String = "menu"
 var dialogue: Node
 var story_reveal: Tween
@@ -36,6 +40,8 @@ var mission: Node
 var hud: CanvasLayer
 var audio: Node
 var in_menu: bool = true
+var started: bool = false
+var resume_ok: bool = false
 
 func _ready() -> void:
 	save_store = SaveStore.session(get_tree())
@@ -47,6 +53,7 @@ func _ready() -> void:
 	if use_volpiano:
 		world.park_id = selected_park
 		world.story_id = selected_story
+		world.race_id = selected_race
 	add_child(world)
 	vehicle = Apollo.instantiate()
 	vehicle.process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -56,6 +63,11 @@ func _ready() -> void:
 		vehicle.position = world.spawn
 		vehicle.rotation.y = world.heading
 		vehicle.recovery_radius = 2000.0
+		if selected_race != "":
+			# Griglia di partenza: Apollo a sinistra, Gino a destra, senza sovrapporsi.
+			var route: Array = world.race_data.route
+			var along := Vector3(float(route[1][0]) - float(route[0][0]), 0.0, float(route[1][1]) - float(route[0][1])).normalized()
+			vehicle.position -= along.cross(Vector3.UP) * 1.3
 	add_child(vehicle)
 	if use_volpiano and world.home != null:
 		world.home.vehicle = vehicle
@@ -75,11 +87,26 @@ func _ready() -> void:
 		mission.traffic_index = world.data.route.find(str(world.story_data.traffic_node))-1
 	if selected_park != "":
 		mission.park_name = world.park_data.name
+	if selected_race != "":
+		mission.set_script(RaceMission)
 	mission.vehicle = vehicle
 	mission.points = world.checkpoints
+	if selected_race != "":
+		gino = Node3D.new()
+		gino.set_script(GinoModel)
+		add_child(gino)
+		mission.rival_node = gino
+		mission.configure(world.race_data.route, int(world.race_data.laps), race_assist_name(), false)
+		mission.add_pads(self, world.race_data.boost_pads)
+		mission.items.setup(self, mission.track, world.race_data.item_pickups)
+		mission.race_started.connect(func(): vehicle.enabled = true)
+		mission.race_finished.connect(func(_won: bool): get_tree().set_meta("apollo_race_defeats", mission.rival.defeats_in_row))
 	if use_volpiano and world.home != null:
 		mission.departure_points = 1
 	add_child(mission)
+	if selected_race != "":
+		# Adattamento automatico: dopo due sconfitte Gino rallenta un poco; non viene mostrato al giocatore.
+		mission.rival.defeats_in_row = int(get_tree().get_meta("apollo_race_defeats", 0))
 	hud = CanvasLayer.new()
 	hud.set_script(Hud)
 	hud.vehicle = vehicle
@@ -103,15 +130,27 @@ func _ready() -> void:
 	hud.park_requested.connect(visit_park)
 	hud.search_requested.connect(search_place)
 	hud.story_requested.connect(visit_story)
+	hud.race_requested.connect(visit_race)
 	hud.dialogue_requested.connect(func(): dialogue.advance())
 	hud.resume_requested.connect(resume_game)
 	hud.restart_requested.connect(start)
 	hud.menu_requested.connect(menu)
 	hud.quit_requested.connect(func(): persist(); get_tree().quit())
 	mission.completed.connect(finish)
+	if selected_race != "":
+		mission.player_boosted.connect(func(_kind: String): audio.boost())
+		mission.collided.connect(func(_strength: float): audio.smash())
+		mission.items.used.connect(func(_item: String): audio.click())
+		mission.items.rival_hit.connect(func(_kind: String): audio.smash())
+		mission.items.player_hit.connect(func(kind: String):
+			audio.smash()
+			hud.splash_overlay.splash(Color("d8402a") if kind == "pomodoro" else (Color("f08a1c") if kind == "arancia" else Color("4f9a4a"))))
 	mission.changed.connect(func(): audio.chime())
 	if selected_story != "":
 		mission.story_event.connect(func(key: String): dialogue.say(key))
+		mission.coin_collected.connect(func(_count: int): audio.coin())
+		mission.bill_collected.connect(func(_cents: int): audio.chime())
+		mission.crate_smashed.connect(func(_count: int): audio.smash())
 		mission.star_collected.connect(func(_count: int):
 			audio.chime()
 			save_store.journey_stars[selected_story] = maxi(_count, save_store.journey_stars[selected_story])
@@ -119,7 +158,8 @@ func _ready() -> void:
 			dialogue.say("star")
 		)
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if "--smoke-test" in OS.get_cmdline_user_args():
+	# Scelta una storia o una gita dal menu: si parte subito, senza un secondo menu.
+	if "--smoke-test" in OS.get_cmdline_user_args() or selected_story != "" or selected_park != "" or selected_race != "":
 		start()
 	else:
 		get_tree().paused = true
@@ -130,17 +170,21 @@ func switch_environment() -> void:
 func visit_park(id: String) -> void:
 	change_environment(true, id)
 
+func visit_race(id: String) -> void:
+	change_environment(true, "", "", id)
+
 func visit_story(id: String) -> void:
 	if id == "parking" and not "school" in get_tree().get_meta("apollo_story_rewards", []):
 		return
 	change_environment(true, "", id)
 
-func change_environment(volpiano: bool, park: String = "", story: String = "") -> void:
+func change_environment(volpiano: bool, park: String = "", story: String = "", race: String = "") -> void:
 	get_tree().paused = false
 	var next: Node3D = load("res://scenes/main/main.tscn").instantiate()
 	next.use_volpiano = volpiano
 	next.selected_park = park
 	next.selected_story = story
+	next.selected_race = race
 	get_tree().root.add_child(next)
 	queue_free()
 
@@ -162,12 +206,16 @@ func start() -> void:
 	if selected_park != "":
 		world.playground.star.hide()
 	in_menu = false
+	started = true
+	resume_ok = false
 	get_tree().paused = false
 	vehicle.enabled = true
 	vehicle.reset_vehicle()
 	camera_rig.snap()
 	mission.restart()
 	mission.active = true
+	if selected_race != "":
+		vehicle.enabled = false
 	hud.elapsed = 0.0
 	hud.overlay.hide()
 	if selected_story != "":
@@ -209,20 +257,28 @@ func dialogue_finished() -> void:
 		hud.show_story_completed()
 
 func resume_game() -> void:
+	if not resume_ok:
+		return
+	in_menu = false
+	if selected_story != "":
+		story_state = "driving"
 	get_tree().paused = false
 	hud.overlay.hide()
 
+## Esc: apre il menu durante la guida, oppure riprende se il menu è già aperto.
 func toggle_pause() -> void:
-	if in_menu or mission.finished or (selected_story != "" and story_state != "driving"):
+	if in_menu:
+		if resume_ok:
+			resume_game()
 		return
-	if get_tree().paused:
-		resume_game()
-	else:
-		get_tree().paused = true
-		hud.show_pause()
+	if mission.finished or (selected_story != "" and story_state != "driving"):
+		return
+	menu()
 
 func menu() -> void:
 	close_garage()
+	resume_ok = started and not in_menu and not mission.finished and not search_open \
+		and (selected_story == "" or story_state == "driving")
 	story_state = "menu"
 	search_open = false
 	in_menu = true
@@ -244,7 +300,15 @@ func finish() -> void:
 		if not save_store.settings.reduced_motion:
 			story_reveal = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 			story_reveal.tween_property(park_camera, "position", park_camera.position + Vector3(5, -2, -2), 2.0)
-		dialogue.begin("parking_ending" if selected_story == "parking" else "ending")
+		if selected_story == "parking":
+			dialogue.begin("parking_ending")
+		else:
+			var result: String = mission.money_result()
+			for id in (["wallet", "all_money"] if result == "win" else (["wallet"] if result == "ok" else [])):
+				if not id in save_store.achievements:
+					save_store.achievements.append(id)
+			persist()
+			dialogue.begin("ending", "ending_" + result)
 	elif selected_park != "":
 		search_open = true
 		park_camera = Camera3D.new()
@@ -254,6 +318,8 @@ func finish() -> void:
 		park_camera.current = true
 		park_camera.h_offset = 8.0
 		hud.show_park_search()
+	elif selected_race != "":
+		hud.show_race_result(mission.player_won)
 	else:
 		hud.show_completed()
 
@@ -288,11 +354,18 @@ func persist() -> bool:
 		hud.dialogue_label.text = save_store.last_error
 	return success
 
+## "Aiuto in gara": 0 = Più aiuto, 0,5 = Normale, 1 = Sfida.
+func race_assist_name() -> String:
+	var value: float = save_store.settings.race_assist
+	return "more_help" if value < 0.25 else ("challenge" if value > 0.75 else "normal")
+
 func apply_settings() -> void:
 	var settings: Dictionary = save_store.settings
 	get_tree().set_meta("apollo_reduced_motion", settings.reduced_motion)
 	if is_instance_valid(vehicle):
 		vehicle.max_speed = 10.0 if settings.gentle else 15.0
+	if selected_race != "" and is_instance_valid(mission):
+		mission.rival.setup(mission.track, race_assist_name(), vehicle.max_speed)
 	if is_instance_valid(camera_rig):
 		camera_rig.sensitivity = settings.camera
 		camera_rig.reduced_motion = settings.reduced_motion

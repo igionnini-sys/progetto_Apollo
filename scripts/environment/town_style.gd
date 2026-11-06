@@ -380,7 +380,12 @@ func planter(pos: Vector3) -> void:
 		var angle := float(i) * TAU / 6
 		batch.add("blob", pos + Vector3(cos(angle) * 0.38, 1.02, sin(angle) * 0.38), Vector3.ONE * 0.26, [Color("f5c04e"), Color("e5566a"), Color("f2f0e6")][i % 3], 0.0, "foliage")
 
+## Le auto parcheggiate sono disattivate: i modelli non erano all'altezza e Apollo/Gino sono gli unici veicoli.
+const PARKED_CARS := false
+
 func parked_car(pos: Vector3, yaw: float) -> void:
+	if not PARKED_CARS:
+		return
 	var color: Color = car_palette[posmod(int(pos.x * 7.0 + pos.z * 3.0), car_palette.size())]
 	var shape := Vector3(0.98, 0.98, 0.95)
 	batch.add("car_body", pos, shape, color, yaw, "paint")

@@ -1,33 +1,168 @@
 {
   "intro": [
-    {"speaker":"granddaughter","text":"Nonno, buongiorno! Secondo te Apollo oggi sta bene?"},
-    {"speaker":"grandfather","text":"Vediamo… ieri sera, quando l'ho spento, ha fatto un sospiro lunghissimo. Io dico che faceva solo scena."},
-    {"speaker":"granddaughter","text":"Forse stamattina non ha tanta voglia di partire. Si è svegliato con il muso lungo!"},
-    {"speaker":"grandfather","text":"Eh, ormai è anziano: si sveglia piano, si lamenta a ogni dosso e vorrebbe la pensione."},
-    {"speaker":"granddaughter","text":"Allora una carezza sul cruscotto! Apollo, da che dobbiamo andare a scuola."},
-    {"speaker":"grandfather","text":"Giro la chiave… Ha sbuffato. Per me vuol dire «cinque minuti ancora, per favore»."},
-    {"speaker":"granddaughter","text":"Ha risposto! Significa «va bene, ma senza fretta». Che furgone scansafatiche!"},
-    {"speaker":"grandfather","text":"Allora cinture: un clic per te, un clic per me… e via con calma che Apollo é ancora mezzo addormentato!"}
+    {
+      "speaker": "granddaughter",
+      "text": "Nonno, buongiorno! Secondo te Apollo oggi sta bene?"
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Vediamo… ieri sera, quando l'ho spento, ha fatto un sospiro lunghissimo. Io dico che faceva solo scena."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Forse stamattina non ha tanta voglia di partire. Si è svegliato con il muso lungo!"
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Eh, ormai è anziano: si sveglia piano, si lamenta a ogni dosso e vorrebbe la pensione."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Allora una carezza sul cruscotto! Apollo, da che dobbiamo andare a scuola."
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Giro la chiave… Ha sbuffato. Per me vuol dire «cinque minuti ancora, per favore»."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Ha risposto! Significa «va bene, ma senza fretta». Che furgone scansafatiche!"
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Un momento… il portafoglio! Non ce l'ho più. Passeggiando mi è scivolato dalla tasca e {cats} l'hanno portato via di corsa."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Che pesti, {cats}! Scappando hanno lasciato una scia di soldi per strada: li raccogliamo con Apollo mentre andiamo a scuola!"
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Brava! Monete e banconote: ne serve il più possibile, o {grandmother} mi mangia vivo."
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Allora cinture: un clic per te, un clic per me… e via con calma che Apollo é ancora mezzo addormentato!"
+    }
   ],
   "parking_intro": [
-    {"speaker":"grandfather","text":"Oggi alleniam Apollo con il parcheggio perfetto in tre soste."},
-    {"speaker":"granddaughter","text":"Six Seven! Cinture allacciate?"},
-    {"speaker":"grandfather","text":"Allacciate! Apollo devi seguire i cerchi azzurri non finire nel fosso come l'ultima volta."}
+    {
+      "speaker": "grandfather",
+      "text": "Oggi alleniam Apollo con il parcheggio perfetto in tre soste."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Six Seven! Cinture allacciate?"
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Allacciate! Apollo devi seguire i cerchi azzurri non finire nel fosso come l'ultima volta."
+    }
   ],
   "ending": [
-    {"speaker":"grandfather","text":"Apollo è fermo non ce la fa piú. Ora proseguiamo a piedi."},
-    {"speaker":"granddaughter","text":"Eccoci a scuola! Grazie, Apollo!"},
-    {"speaker":"grandfather","text":"Buona giornata! Apollo ti aspetta all uscita!"}
+    {
+      "speaker": "grandfather",
+      "text": "Apollo è fermo non ce la fa piú. Ora proseguiamo a piedi."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Eccoci a scuola! Grazie, Apollo!"
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Buona giornata! Apollo ti aspetta all uscita!"
+    }
   ],
   "parking_ending": [
-    {"speaker":"granddaughter","text":"Tre soste morbide! Apollo merita una medaglia."},
-    {"speaker":"grandfather","text":"Medaglia di pilota pazzo: consegnata ad Apollo!"}
+    {
+      "speaker": "granddaughter",
+      "text": "Tre soste morbide! Apollo merita una medaglia."
+    },
+    {
+      "speaker": "grandfather",
+      "text": "Medaglia di pilota pazzo: consegnata ad Apollo!"
+    }
   ],
-  "departure":{"speaker":"granddaughter","text":"Apollo, dai che si va!"},
-  "midway":{"speaker":"grandfather","text":"Che bel viaggio. Piano piano, che Apollo si deve scaldare."},
-  "traffic":{"speaker":"grandfather","text":"Semaforo rosso, uffa dobbiamo fermarci propio ora che Apollo stava accellerando."},
-  "green":{"speaker":"granddaughter","text":"Verde! Dai Apollo possiamo andare."},
-  "star":{"speaker":"granddaughter","text":"Una stella per Apollo!"},
-  "parking":{"speaker":"grandfather","text":"Sosta perfetta! Apollo stavolta mi hai stupito."},
-  "arrival":{"speaker":"grandfather","text":"Ci siamo quasi. Fermiamo Apollo nel cerchio azzurro."}
+  "departure": {
+    "speaker": "granddaughter",
+    "text": "Apollo, dai che si va!"
+  },
+  "midway": {
+    "speaker": "grandfather",
+    "text": "Che bel viaggio. Piano piano, che Apollo si deve scaldare."
+  },
+  "traffic": {
+    "speaker": "grandfather",
+    "text": "Semaforo rosso, uffa dobbiamo fermarci propio ora che Apollo stava accellerando."
+  },
+  "green": {
+    "speaker": "granddaughter",
+    "text": "Verde! Dai Apollo possiamo andare."
+  },
+  "coins_15": {
+    "speaker": "granddaughter",
+    "text": "Nonno, quindici monete! Il portafoglio si sta riempiendo."
+  },
+  "coins_50": {
+    "speaker": "grandfather",
+    "text": "Cinquanta monete! Con questa paga Apollo si compra il pieno e un biscotto."
+  },
+  "crates_5": {
+    "speaker": "granddaughter",
+    "text": "Crash! Nonno, Apollo adesso si diverte a fare il bulldozer!"
+  },
+  "crates_20": {
+    "speaker": "grandfather",
+    "text": "Venti casse... speriamo che il fruttivendolo non ci mandi il conto."
+  },
+  "star": {
+    "speaker": "granddaughter",
+    "text": "Una stella per Apollo!"
+  },
+  "parking": {
+    "speaker": "grandfather",
+    "text": "Sosta perfetta! Apollo stavolta mi hai stupito."
+  },
+  "arrival": {
+    "speaker": "grandfather",
+    "text": "Ci siamo quasi. Fermiamo Apollo nel cerchio azzurro."
+  },
+  "ending_win": [
+    {
+      "speaker": "grandfather",
+      "text": "Tutto il portafoglio è di nuovo mio, fino all'ultimo centesimo! Così {grandmother} non lo saprà mai."
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Missione compiuta, nonno! Apollo è un campione di recupero."
+    }
+  ],
+  "ending_ok": [
+    {
+      "speaker": "grandfather",
+      "text": "Non c'è tutto, ma abbastanza per fare bella figura con {grandmother}. Grazie Apollo!"
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Missione compiuta! Il resto lo chiediamo a {cats}."
+    }
+  ],
+  "ending_lose": [
+    {
+      "speaker": "grandfather",
+      "text": "Oh no! Abbiamo recuperato troppo poco… ora chi la sente {grandmother}!!"
+    },
+    {
+      "speaker": "granddaughter",
+      "text": "Coraggio nonno, domani riproviamo con Apollo."
+    }
+  ],
+  "bill_first": {
+    "speaker": "granddaughter",
+    "text": "Una banconota! Era del nonno, {cats} l'hanno fatta cadere scappando!"
+  },
+  "money_half": {
+    "speaker": "grandfather",
+    "text": "Più di metà del portafoglio è salvo. Forse con {grandmother} la scampiamo."
+  }
 }

@@ -11,6 +11,7 @@ static func setup() -> void:
 	bind("pause", [KEY_ESCAPE], JOY_BUTTON_START)
 	bind("lights", [KEY_L], JOY_BUTTON_RIGHT_SHOULDER)
 	bind("horn", [KEY_H], JOY_BUTTON_LEFT_SHOULDER)
+	bind("use_item", [KEY_E], JOY_BUTTON_LEFT_STICK)
 	bind("camera", [KEY_C], JOY_BUTTON_RIGHT_STICK)
 	bind("zoom_in", [KEY_PAGEUP])
 	bind("zoom_out", [KEY_PAGEDOWN])
