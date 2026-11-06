@@ -6,6 +6,7 @@ signal race_started
 signal lap_completed(lap: int)
 signal race_finished(player_won: bool)
 signal collided(strength: float)
+signal position_changed(player_first: bool)
 signal player_boosted(kind: String)   # "strisce", "lanciata", "scia"
 const RaceTrack = preload("res://scripts/gameplay/race_track.gd")
 const Rival = preload("res://scripts/gameplay/rival_driver.gd")
@@ -40,6 +41,9 @@ var player_drafting: bool = false
 var message: String = ""
 var message_time: float = 0.0
 var collision_count: int = 0
+var race_time: float = 0.0
+var _was_first: bool = true
+var _position_cooldown: float = 0.0
 var _hit_cooldown: float = 0.0
 var _accel_since: float = -1.0
 var _last_tick: int = -1
@@ -72,6 +76,9 @@ func restart() -> void:
 	player_won = false
 	launch_result = ""
 	collision_count = 0
+	race_time = 0.0
+	_was_first = true
+	_position_cooldown = 0.0
 	_hit_cooldown = 0.0
 	draft_charge = 0.0
 	player_drafting = false
@@ -108,6 +115,8 @@ func _physics_process(delta: float) -> void:
 		count_down(delta)
 		return
 	message_time = maxf(message_time - delta, 0.0)
+	race_time += delta
+	_position_cooldown = maxf(_position_cooldown - delta, 0.0)
 	var before := current_lap()
 	update_player_distance(track.project(vehicle.global_position))
 	var player_lateral := track.lateral(vehicle.global_position, player_distance)
@@ -118,6 +127,11 @@ func _physics_process(delta: float) -> void:
 	apply_collision(delta, player_lateral)
 	items.update(delta, self, player_lateral, rival_before)
 	animate_stun()
+	var first := player_distance >= rival.distance
+	if first != _was_first and _position_cooldown == 0.0 and absf(player_distance - rival.distance) > 3.0:
+		_was_first = first
+		_position_cooldown = 3.0
+		position_changed.emit(first)
 	place_rival(delta)
 	if current_lap() != before:
 		lap_completed.emit(before)

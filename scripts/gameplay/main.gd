@@ -24,6 +24,7 @@ var garage_active: bool = false
 var garage_display: Node3D
 var selected_story: String = ""
 var selected_race: String = ""
+var race_intro_done: bool = false
 var gino: Node3D
 var story_state: String = "menu"
 var dialogue: Node
@@ -141,6 +142,12 @@ func _ready() -> void:
 		mission.player_boosted.connect(func(_kind: String): audio.boost())
 		mission.collided.connect(func(_strength: float): audio.smash())
 		mission.items.used.connect(func(_item: String): audio.click())
+		mission.collided.connect(func(_strength: float): dialogue.bark("race_bump"))
+		mission.items.rival_hit.connect(func(_kind: String): dialogue.bark("race_hit_gino"))
+		mission.items.player_hit.connect(func(_kind: String): dialogue.bark("race_hit_player"))
+		mission.position_changed.connect(func(first: bool): dialogue.bark("race_overtake" if first else "race_gino_overtake"))
+		mission.player_boosted.connect(func(kind: String):
+			dialogue.bark("race_launch" if kind == "lanciata" else ("race_draft" if kind == "scia" else "race_boost")))
 		mission.items.rival_hit.connect(func(_kind: String): audio.smash())
 		mission.items.player_hit.connect(func(kind: String):
 			audio.smash()
@@ -216,6 +223,14 @@ func start() -> void:
 	mission.active = true
 	if selected_race != "":
 		vehicle.enabled = false
+		dialogue.reset()
+		if not race_intro_done:
+			# Presentazione di Gino: inquadratura 3D che scorre sui due furgoni, poi conto alla rovescia.
+			race_intro_done = true
+			mission.active = false
+			get_tree().paused = true
+			story_state = "intro"
+			show_race_intro()
 	hud.elapsed = 0.0
 	hud.overlay.hide()
 	if selected_story != "":
@@ -226,6 +241,28 @@ func start() -> void:
 		dialogue.reset()
 		show_cabin()
 		dialogue.begin("parking_intro" if selected_story == "parking" else "intro")
+	elif selected_race != "" and story_state == "intro":
+		dialogue.begin("race_intro")
+
+func show_race_intro() -> void:
+	var forward: Vector3 = -vehicle.global_basis.z
+	var right := forward.cross(Vector3.UP)
+	var centre: Vector3 = vehicle.global_position + right * 1.3
+	park_camera = Camera3D.new()
+	add_child(park_camera)
+	park_camera.process_mode = Node.PROCESS_MODE_ALWAYS
+	park_camera.fov = 52.0
+	var from: Vector3 = centre + forward * 8.5 - right * 5.5 + Vector3.UP * 1.5
+	var to: Vector3 = centre + forward * 6.5 + right * 4.5 + Vector3.UP * 1.1
+	park_camera.global_position = from
+	park_camera.look_at(centre + Vector3.UP * 1.0)
+	park_camera.current = true
+	if not save_store.settings.reduced_motion:
+		story_reveal = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		story_reveal.tween_method(func(t: float):
+			if is_instance_valid(park_camera):
+				park_camera.global_position = from.lerp(to, t)
+				park_camera.look_at(centre + Vector3.UP * 1.0), 0.0, 1.0, 14.0)
 
 func show_cabin() -> void:
 	park_camera = Camera3D.new()
@@ -237,6 +274,18 @@ func show_cabin() -> void:
 	park_camera.current = true
 
 func dialogue_finished() -> void:
+	if selected_race != "" and story_state == "intro":
+		story_state = "driving"
+		if story_reveal:
+			story_reveal.kill()
+		if is_instance_valid(park_camera):
+			park_camera.queue_free()
+			park_camera = null
+		camera_rig.camera.current = true
+		get_tree().paused = false
+		mission.active = true
+		hud.overlay.hide()
+		return
 	if story_state == "intro":
 		story_state = "driving"
 		park_camera.queue_free()
@@ -271,7 +320,7 @@ func toggle_pause() -> void:
 		if resume_ok:
 			resume_game()
 		return
-	if mission.finished or (selected_story != "" and story_state != "driving"):
+	if mission.finished or ((selected_story != "" or selected_race != "") and story_state == "intro") or (selected_story != "" and story_state != "driving"):
 		return
 	menu()
 
@@ -319,7 +368,12 @@ func finish() -> void:
 		park_camera.h_offset = 8.0
 		hud.show_park_search()
 	elif selected_race != "":
-		hud.show_race_result(mission.player_won)
+		var won: bool = mission.player_won
+		var clean: bool = won and mission.collision_count == 0 and mission.items.hits_on_player == 0
+		var gained: Array = save_store.record_race(won, clean, mission.race_time)
+		persist()
+		dialogue.lines_for_result(won, clean)
+		hud.show_race_result(won, clean, mission.race_time, gained)
 	else:
 		hud.show_completed()
 

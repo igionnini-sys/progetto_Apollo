@@ -23,6 +23,12 @@ func run() -> void:
 	root.add_child(main)
 	await frames(5)
 	var mission = main.mission
+	check(paused and main.story_state == "intro" and not mission.active, "Presentazione di Gino: gioco in pausa con la camera della cutscene")
+	check(main.park_camera != null and main.park_camera.current and main.dialogue.current_text.begins_with("Gino"), "Cutscene 3D e prima battuta di Gino")
+	var lines_count: int = main.dialogue.sequence.size()
+	for i in lines_count:
+		main.dialogue.advance()
+	check(not paused and main.story_state == "driving" and mission.active and main.park_camera == null, "Fine presentazione: parte il conto alla rovescia")
 	check(mission.track.length > 900.0, "Percorso gara caricato: %.0f m" % mission.track.length)
 	main.save_store.settings.race_assist = 1.0
 	main.apply_settings()
@@ -36,9 +42,14 @@ func run() -> void:
 	check(not mission.running and not main.vehicle.enabled, "Apollo fermo durante il conto alla rovescia")
 	var gap: float = main.gino.global_position.distance_to(main.vehicle.global_position)
 	check(gap >= 2.5 and gap < 6.0, "Apollo e Gino partono affiancati senza sovrapporsi (%.1f m)" % gap)
-	await frames(160)
+	while mission.countdown > 0.4:
+		await physics_frame
 	Input.action_press("accelerate")
-	await frames(20)
+	for i in 60:
+		await physics_frame
+		if mission.running:
+			break
+	await frames(2)
 	check(mission.running and main.vehicle.enabled, "Via! dopo 3 secondi")
 	check(mission.launch_result == "lanciata" and main.vehicle.effects.is_boosting(), "Partenza lanciata: acceleratore premuto in tempo dà il turbo")
 	var peak := 0.0
@@ -165,6 +176,17 @@ func run() -> void:
 		main.vehicle.global_position = mission.track.points[i] + Vector3.UP * 0.15
 		await frames(3)
 	check(mission.finished and mission.player_won, "Arrivo raggiunto da Apollo prima di Gino")
+	check(main.save_store.race_results.races == 1 and main.save_store.race_results.wins == 1 and "beat_gino" in main.save_store.achievements, "Vittoria registrata nel salvataggio con il traguardo Battuto Gino")
+	check(not "clean_race" in main.save_store.achievements, "Gara con urti e colpi: niente traguardo Gara pulita")
+	var store = load("res://scripts/utilities/save_store.gd").new()
+	store.memory_only = true
+	var gained: Array = store.record_race(true, true, 70.0)
+	check(gained == ["beat_gino", "clean_race"] and store.race_results.best_time == 70.0, "Gara pulita vinta: due traguardi e record")
+	check(store.record_race(true, true, 80.0).is_empty() and store.race_results.best_time == 70.0, "Un tempo peggiore non sostituisce il record")
+	store.record_race(false, false, 90.0)
+	var reloaded = load("res://scripts/utilities/save_store.gd").new()
+	reloaded.apply_document({"race_results": {"races": "x", "wins": -5, "best_time": 1e12}, "achievements": ["beat_gino", "inventato"]})
+	check(reloaded.race_results.races == 0 and reloaded.race_results.wins == 0 and reloaded.race_results.best_time == 3600.0 and reloaded.achievements == ["beat_gino"], "Risultati gara non validi vengono ripuliti")
 	main.free()
 	print("Verifiche gara: %s" % ("OK" if failures == 0 else "%d FALLITE" % failures))
 	quit(failures)

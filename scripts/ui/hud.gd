@@ -312,13 +312,14 @@ func show_collection() -> void:
 	label(content, medals, 24, Color("eccb82"))
 	label(content, ("★ " if "school" in rewards else "☆ ") + "Compagni di viaggio    " + ("★ " if "parking" in rewards else "☆ ") + "Pilota gentile", 23)
 	var gained: Array = store.achievements
-	label(content, "TRAGUARDI · %d / 2" % gained.size(), 24, Color("eccb82"))
+	label(content, "TRAGUARDI · %d / 4" % gained.size(), 24, Color("eccb82"))
 	label(content, ("★ " if "wallet" in gained else "☆ ") + "Portafoglio salvato    " + ("★ " if "all_money" in gained else "☆ ") + "Nemmeno un centesimo perso", 23)
+	label(content, ("★ " if "beat_gino" in gained else "☆ ") + "Battuto Gino    " + ("★ " if "clean_race" in gained else "☆ ") + "Gara pulita", 23)
 	button("Menu principale", show_menu)
 
 func show_story_dialogue() -> void:
 	var storyteller: Node = get_parent().dialogue
-	clear_card("Il Parcheggio Perfetto" if get_parent().selected_story == "parking" else "Missione Scuola", storyteller.current_text)
+	clear_card("Sfida con Gino" if get_parent().selected_race != "" else ("Il Parcheggio Perfetto" if get_parent().selected_story == "parking" else "Missione Scuola"), storyteller.current_text)
 	button("Si parte!" if get_parent().story_state == "intro" and storyteller.index == storyteller.sequence.size()-1 else "Avanti", func(): dialogue_requested.emit())
 	button("Menu principale", func(): menu_requested.emit())
 	label(content, "%d / %d · Leggiamo con calma" % [storyteller.index+1, storyteller.sequence.size()], 22, Color("c1dcdb"))
@@ -427,10 +428,18 @@ func park_layout() -> void:
 	(content.get_child(1) as Label).add_theme_font_size_override("font_size", 38)
 	fit_side_card.call_deferred()
 
-func show_race_result(player_won: bool) -> void:
-	clear_card("HAI BATTUTO GINO!" if player_won else "GINO HA VINTO!", "Bel sorpasso, pilota! Gino lascia un cesto di frutta sul traguardo." if player_won else "Per un soffio! La rivincita è subito qui.")
+func show_race_result(player_won: bool, clean: bool = false, seconds: float = 0.0, gained: Array = []) -> void:
+	var talk: String = get_parent().dialogue.current_text
+	clear_card("HAI BATTUTO GINO!" if player_won else "GINO HA VINTO!", talk if talk != "" else ("Bel sorpasso, pilota!" if player_won else "Per un soffio! La rivincita è subito qui."))
+	var results: Dictionary = get_parent().save_store.race_results
+	label(content, "Tempo: %.1f s%s" % [seconds, ("  ·  Record: %.1f s" % results.best_time) if results.best_time > 0.0 else ""], 28, Color("eccb82"))
+	label(content, "Vittorie: %d su %d gare" % [results.wins, results.races], 22, Color("c1dcdb"))
+	if player_won:
+		label(content, "★ Battuto Gino" + ("  ·  nuovo traguardo!" if "beat_gino" in gained else ""), 26, Color("eccb82"))
+		label(content, ("★ Gara pulita" + ("  ·  nuovo traguardo!" if "clean_race" in gained else "")) if clean else "☆ Gara pulita: nessun urto e nessuna frutta addosso", 24, Color("eccb82"))
 	button("Rivincita!", func(): restart_requested.emit())
 	button("Menu principale", func(): menu_requested.emit())
+	show_save_warning()
 
 func show_completed() -> void:
 	clear_card("ESPLORAZIONE COMPLETATA!" if mission.route_mode else "GIRO COMPLETATO!", "Bravo pilota! Apollo è pronto per la prossima avventura.\nHai superato tutte le tappe e parcheggiato con cura.")
@@ -462,6 +471,9 @@ func _process(delta: float) -> void:
 	guidance_label.text = mission.instructions()
 	if mission.story_mode:
 		dialogue_label.text = get_parent().dialogue.current_text if is_instance_valid(get_parent().dialogue) else ""
+	elif "rival" in mission:
+		var talker: Node = get_parent().dialogue
+		dialogue_label.text = talker.current_text if is_instance_valid(talker) and talker.bark_active() else "W accelera · E usa l'oggetto (cassetta rossa con il fulmine) · strisce azzurre = turbo · stai dietro a Gino per la scia"
 	elif not get_tree().paused:
 		elapsed += delta
 		var lines := ["Nonno: «Allacciamo le cinture e via!»", "Nipotina: «Si parte con Apollo!»", "Nonno: «Piano piano, comandante. Ci godiamo il viaggio!»"]

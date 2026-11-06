@@ -1,5 +1,16 @@
 # Registro modifiche
 
+## 6 novembre 2026 — Livello 2: la sfida con Gino
+
+- Nuova gara a sprint contro Gino da Via Trento a Via Pinetti passando per Corso Regina Margherita (SP40/SP39), 1033 m, generata da `tools/build_race_route.py` in `data/levels/level2_race.json`. Menu: "Sfida con Gino".
+- Moduli: `race_mission.gd` (conto alla rovescia, partenza lanciata, strisce, scia, urti, classifica), `race_track.gd`, `rival_driver.gd` (IA di Gino), `vehicle_effects.gd`, `boost_pad.gd`, `item_system.gd`, `item_pickup.gd`, `gino_fiorino.gd` (modello originale). Nuova azione `use_item` (tasto E / click stick sinistro).
+- Guida: 3 strisce turbo sulle rette, mini-turbo con W negli ultimi 0,9 s del conto, scia dietro Gino, FOV più ampio, linee di velocità, scintille e motore più acuto (disattivati con "Movimenti ridotti").
+- Oggetti: cassette (Apollo: forbici, multimetro, trapano, guanti isolanti, batteria) e casse di frutta (Gino: pomodoro, arancia, anguria), rigenerazione 8 s. Urti morbidi fra i due veicoli, senza fisica.
+- Equilibratura: impostazione "Aiuto in gara" (Più aiuto/Normale/Sfida), adattamento dopo due sconfitte, rubber banding asimmetrico. Simulazioni in `tests/race_balance_test.gd`.
+- Storia: presentazione 3D di Gino con dialoghi (`data/dialogue/race.json`), battute durante la gara, traguardi "Battuto Gino" e "Gara pulita", record di tempo e vittorie nel salvataggio (`race_results`).
+- Rimosse in tutto il gioco le auto parcheggiate (`PARKED_CARS := false` in `town_style.gd`).
+- Test: `tests/race_logic_test.gd`, `tests/race_test.gd`, `tests/race_balance_test.gd`; catture `tests/gino_capture.gd`, `tests/race_capture.gd`, `tests/race_story_capture.gd`.
+
 ## 3 novembre 2026 — Il plesso scolastico dalle foto
 
 - Nuovo modulo `scripts/environment/school_building.gd`: il plesso di Via Trieste (impronta OSM 215468999) ha pareti in mattoni rossi alte 4 m, finestre a nastro con montanti chiari, ampia gronda in lamiera chiara su pilastri di cemento lungo i fronti lunghi e copertura piana chiara. Un corpo alto centrale in mattoni con finestre a nastro, un'ala verde in fondo con riquadri rossi, ingresso con arco verde, rastrelliere con pilastrini neri e piazzale d'asfalto davanti.

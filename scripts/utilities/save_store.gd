@@ -7,6 +7,7 @@ var settings: Dictionary = DEFAULTS.duplicate()
 var parks: Array = []
 var stories: Array = []
 var achievements: Array = []
+var race_results: Dictionary = {"races": 0, "wins": 0, "best_time": 0.0}
 var journey_stars: Dictionary = {"school": 0, "parking": 0}
 var recovered: bool = false
 var last_error: String = ""
@@ -41,6 +42,7 @@ func restore() -> void:
 	parks = []
 	stories = []
 	achievements = []
+	race_results = {"races": 0, "wins": 0, "best_time": 0.0}
 	journey_stars = {"school": 0, "parking": 0}
 	recovered = false
 	var data := read_document(path)
@@ -62,13 +64,38 @@ func apply_document(data: Dictionary) -> void:
 	stories = validated_ids(data.get("stories", []), ["school", "parking"])
 	if "parking" in stories and not "school" in stories:
 		stories.erase("parking")
-	achievements = validated_ids(data.get("achievements", []), ["wallet", "all_money"])
+	achievements = validated_ids(data.get("achievements", []), ["wallet", "all_money", "beat_gino", "clean_race"])
+	var race_data: Variant = data.get("race_results", {})
+	if race_data is Dictionary:
+		for key in ["races", "wins"]:
+			var value: Variant = race_data.get(key, 0)
+			if (value is int or value is float) and is_finite(float(value)):
+				race_results[key] = clampi(int(value), 0, 100000)
+		var best: Variant = race_data.get("best_time", 0.0)
+		if (best is int or best is float) and is_finite(float(best)):
+			race_results.best_time = clampf(float(best), 0.0, 3600.0)
 	var star_data: Variant = data.get("journey_stars", {})
 	if star_data is Dictionary:
 		for id in journey_stars:
 			var value: Variant = star_data.get(id, 0)
 			if (value is int or value is float) and is_finite(float(value)):
 				journey_stars[id] = clampi(int(value), 0, 3)
+
+## Registra una gara: restituisce i traguardi nuovi ottenuti.
+func record_race(won: bool, clean: bool, seconds: float) -> Array:
+	race_results.races += 1
+	var gained: Array = []
+	if won:
+		race_results.wins += 1
+		if race_results.best_time <= 0.0 or seconds < race_results.best_time:
+			race_results.best_time = snappedf(seconds, 0.1)
+		if not "beat_gino" in achievements:
+			achievements.append("beat_gino")
+			gained.append("beat_gino")
+		if clean and not "clean_race" in achievements:
+			achievements.append("clean_race")
+			gained.append("clean_race")
+	return gained
 
 func validated_ids(values: Variant, allowed: Array) -> Array:
 	var result: Array = []
@@ -90,7 +117,7 @@ func save(tree: SceneTree = null) -> bool:
 	if file == null:
 		last_error = "Impossibile scrivere il salvataggio. I premi restano disponibili nella partita."
 		return false
-	file.store_string(JSON.stringify({"version": 1, "settings": settings, "parks": parks, "stories": stories, "achievements": achievements, "journey_stars": journey_stars}, "\t"))
+	file.store_string(JSON.stringify({"version": 1, "settings": settings, "parks": parks, "stories": stories, "achievements": achievements, "race_results": race_results, "journey_stars": journey_stars}, "\t"))
 	file.flush()
 	var status := file.get_error()
 	file.close()

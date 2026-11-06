@@ -21,6 +21,8 @@ var story_traffic: Node3D
 var park_id: String = ""
 var race_id: String = ""
 var race_data: Dictionary = {}
+var race_segments: Array = []   # [a, b, semilarghezza + margine] del percorso della gara
+const RACE_BUILDING_MARGIN := 0.7
 var park_data: Dictionary = {}
 var playground: Node3D
 var town = TownStyle.new()
@@ -81,6 +83,8 @@ func _ready() -> void:
 	trieste.prepare(data.roads)
 	town.reference = trento
 	town.register_roads(data.roads)
+	if race_id != "":
+		prepare_race_clearance()
 	var route: Array = data.route
 	for id in route:
 		checkpoints.append(point(data.nodes[id]))
@@ -355,6 +359,41 @@ func signed_area(outline: PackedVector2Array) -> float:
 		total += p.x * q.y - q.x * p.y
 	return total * 0.5
 
+## Gara: segmenti del percorso con la semilarghezza reale della strada più un margine.
+func prepare_race_clearance() -> void:
+	var widths: Dictionary = {}
+	for road: Dictionary in data.roads:
+		for i in range(road.points.size() - 1):
+			var a := Vector2(road.points[i][0], road.points[i][1])
+			var b := Vector2(road.points[i + 1][0], road.points[i + 1][1])
+			widths[[a, b]] = float(road.width)
+			widths[[b, a]] = float(road.width)
+	race_segments.clear()
+	for i in range(data.route.size() - 1):
+		var a := Vector2(data.nodes[data.route[i]][0], data.nodes[data.route[i]][1])
+		var b := Vector2(data.nodes[data.route[i + 1]][0], data.nodes[data.route[i + 1]][1])
+		race_segments.append([a, b, float(widths.get([a, b], 6.0)) * 0.5 + RACE_BUILDING_MARGIN])
+
+## Un edificio che invade la carreggiata del percorso (o il suo margine) non viene costruito.
+func race_blocks(outline: PackedVector2Array) -> bool:
+	for entry: Array in race_segments:
+		var a: Vector2 = entry[0]
+		var b: Vector2 = entry[1]
+		var clearance: float = entry[2]
+		if Geometry2D.is_point_in_polygon(a, outline) or Geometry2D.is_point_in_polygon(b, outline):
+			return true
+		for i in outline.size():
+			var c := outline[i]
+			var d := outline[(i + 1) % outline.size()]
+			if Geometry2D.segment_intersects_segment(a, b, c, d) != null:
+				return true
+			var closest_on_edge := Geometry2D.get_closest_point_to_segment(a, c, d)
+			var nearest := minf(minf(a.distance_to(closest_on_edge), b.distance_to(Geometry2D.get_closest_point_to_segment(b, c, d))),
+				minf(c.distance_to(Geometry2D.get_closest_point_to_segment(c, a, b)), d.distance_to(Geometry2D.get_closest_point_to_segment(d, a, b))))
+			if nearest < clearance:
+				return true
+	return false
+
 func build_buildings(bounds: AABB) -> Dictionary:
 	var walls := SurfaceTool.new()
 	walls.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -376,6 +415,8 @@ func build_buildings(bounds: AABB) -> Dictionary:
 			continue
 		outline.remove_at(outline.size() - 1)
 		if Geometry2D.triangulate_polygon(outline).is_empty():
+			continue
+		if race_blocks(outline):
 			continue
 		town.footprints.append(outline)
 		var h: float = town.height(building)
@@ -787,7 +828,7 @@ func arrival_marker() -> void:
 	beam.material_override = Materials.beacon()
 	beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(beam)
-	var arrival := G.label(root, "ARRIVO ESPLORAZIONE", Vector3.UP * 5.0, 36)
+	var arrival := G.label(root, "TRAGUARDO" if race_id != "" else "ARRIVO ESPLORAZIONE", Vector3.UP * 5.0, 36)
 	arrival.name = "Etichetta"
 	arrival.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 

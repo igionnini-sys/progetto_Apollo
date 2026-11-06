@@ -1,0 +1,51 @@
+{
+  "race_intro": [
+    {"speaker": "gino", "text": "Ehi, Apollo! Buongiorno! Ho le casse piene di frutta fresca e un furgoncino che vola!"},
+    {"speaker": "grandfather", "text": "Ecco Gino, il fruttivendolo. Ogni volta che ci incontra vuole fare la gara fino a Via Pinetti."},
+    {"speaker": "gino", "text": "Chi arriva primo offre le albicocche! Ma attenzione: io la frutta la lancio!"},
+    {"speaker": "granddaughter", "text": "Noi abbiamo gli attrezzi del nonno elettricista: forbici, trapano, multimetro e una batteria per il turbo!"},
+    {"speaker": "grandfather", "text": "Si corre con allegria, comandante: nessuno si fa male e nessuno si arrabbia."},
+    {"speaker": "granddaughter", "text": "Le strisce azzurre danno il turbo. E se stai dietro a Gino, la scia ti spinge!"},
+    {"speaker": "gino", "text": "Al tre si parte! Tieni premuto W appena prima del Via e il motore ti ringrazia!"}
+  ],
+  "race_hit_gino": [
+    {"speaker": "granddaughter", "text": "Colpito! Che capriola, Gino!"},
+    {"speaker": "grandfather", "text": "Preciso come un elettricista. Bel colpo!"}
+  ],
+  "race_hit_player": [
+    {"speaker": "gino", "text": "Frutta fresca in pieno parabrezza! Pulito pulito!"},
+    {"speaker": "gino", "text": "Questa era un'ordinazione speciale per Apollo!"}
+  ],
+  "race_bump": [
+    {"speaker": "gino", "text": "Ehi, piano con la vernice! Mica siamo auto da scontro!"},
+    {"speaker": "grandfather", "text": "Una toccatina da gentiluomini. Teniamo la strada."}
+  ],
+  "race_overtake": [
+    {"speaker": "granddaughter", "text": "Sorpasso! Ciao ciao, Gino!"},
+    {"speaker": "grandfather", "text": "Brava, comandante. Davanti c'è più aria pulita."}
+  ],
+  "race_gino_overtake": [
+    {"speaker": "gino", "text": "Ci vediamo al traguardo, Apollo!"},
+    {"speaker": "granddaughter", "text": "Non è finita: riprendiamolo con un turbo!"}
+  ],
+  "race_draft": [
+    {"speaker": "grandfather", "text": "Stai nella sua scia, così il vento lavora per noi."}
+  ],
+  "race_launch": [
+    {"speaker": "granddaughter", "text": "Partenza lanciata! Siamo partiti col razzo!"}
+  ],
+  "race_boost": [
+    {"speaker": "granddaughter", "text": "Turbo! Reggiti forte, Apollo!"}
+  ],
+  "race_win": [
+    {"speaker": "gino", "text": "Complimenti, Apollo! Un cesto di albicocche per l'equipaggio vincitore."},
+    {"speaker": "grandfather", "text": "Gara vinta e frutta in omaggio: una giornata perfetta."}
+  ],
+  "race_win_clean": [
+    {"speaker": "gino", "text": "Nemmeno un graffio e nemmeno una macchia: una gara pulita. Complimenti!"}
+  ],
+  "race_loss": [
+    {"speaker": "gino", "text": "Ho vinto io! Ma la rivincita è subito, le albicocche aspettano."},
+    {"speaker": "granddaughter", "text": "Per un soffio! La prossima volta usiamo meglio le strisce."}
+  ]
+}
